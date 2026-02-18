@@ -1,0 +1,316 @@
+/* ===== DESIGN SYSTEM — GreenLeaf CMS ===== */
+
+:root {
+  /* Primary palette */
+  --color-primary-dark: #3A5A40;
+  --color-primary-mid: #6B8E4E;
+  --color-primary-light: #8CB369;
+  --color-neutral-cream: #DDD5B8;
+  --color-accent-orange: #E8871E;
+
+  /* Extended neutrals */
+  --color-bg: #F5F2EB;
+  --color-bg-card: #FFFFFF;
+  --color-bg-sidebar: #2D4535;
+  --color-text-primary: #1A2E22;
+  --color-text-secondary: #5A6E60;
+  --color-text-light: #8A9A8F;
+  --color-text-on-dark: #E8E4DA;
+  --color-text-on-accent: #FFFFFF;
+  --color-border: #D4CDB8;
+  --color-border-light: #E8E4DA;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(42, 69, 53, 0.08);
+  --shadow-md: 0 4px 12px rgba(42, 69, 53, 0.10);
+  --shadow-lg: 0 8px 30px rgba(42, 69, 53, 0.12);
+  --shadow-accent: 0 4px 16px rgba(232, 135, 30, 0.25);
+
+  /* Spacing scale */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Layout */
+  --sidebar-width: 260px;
+  --sidebar-collapsed: 72px;
+  --header-height: 64px;
+}
+
+/* ===== DARK THEME ===== */
+[data-theme="dark"] {
+  --color-bg: #1A1F1C;
+  --color-bg-card: #242B26;
+  --color-bg-sidebar: #151A16;
+  --color-text-primary: #E8E4DA;
+  --color-text-secondary: #A0AFA5;
+  --color-text-light: #6B7A70;
+  --color-text-on-dark: #E8E4DA;
+  --color-border: #3A4A3F;
+  --color-border-light: #2E3B32;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .header {
+  background: rgba(26, 31, 28, 0.85);
+}
+
+[data-theme="dark"] .pages-filter-tab.active {
+  background: var(--color-primary-mid);
+}
+
+[data-theme="dark"] .editor-toolbar {
+  background: rgba(36, 43, 38, 0.8);
+}
+
+[data-theme="dark"] .pages-table thead th {
+  background: rgba(36, 43, 38, 0.5);
+}
+
+/* ===== RESET ===== */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+  border: none;
+  outline: none;
+  background: none;
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: inherit;
+  outline: none;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* ===== TYPOGRAPHY ===== */
+h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-text-primary);
+}
+
+h2 {
+  font-size: 1.375rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--color-text-primary);
+}
+
+h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-text-primary);
+}
+
+h4 {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--color-text-secondary);
+}
+
+/* ===== UTILITY CLASSES ===== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--color-accent-orange);
+  color: var(--color-text-on-accent);
+  box-shadow: var(--shadow-accent);
+}
+
+.btn-primary:hover {
+  background: #D47A18;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(232, 135, 30, 0.35);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-secondary {
+  background: var(--color-primary-dark);
+  color: var(--color-text-on-accent);
+}
+
+.btn-secondary:hover {
+  background: #2D4535;
+  transform: translateY(-1px);
+}
+
+.btn-outline {
+  border: 1.5px solid var(--color-border);
+  color: var(--color-text-primary);
+  background: var(--color-bg-card);
+}
+
+.btn-outline:hover {
+  border-color: var(--color-primary-mid);
+  color: var(--color-primary-dark);
+  background: rgba(107, 142, 78, 0.06);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.badge-published {
+  background: rgba(107, 142, 78, 0.15);
+  color: var(--color-primary-dark);
+}
+
+.badge-draft {
+  background: rgba(221, 213, 184, 0.5);
+  color: var(--color-text-secondary);
+}
+
+.card {
+  background: var(--color-bg-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border-light);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-light);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn var(--transition-slow) ease forwards;
+}
+
+.animate-slide-in {
+  animation: slideInLeft var(--transition-slow) ease forwards;
+}

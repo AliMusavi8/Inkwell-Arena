@@ -1,0 +1,213 @@
+.myposts-page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+}
+
+.myposts-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.myposts-header-left h1 {
+    margin-bottom: 2px;
+}
+
+.myposts-header-left p {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+}
+
+/* ===== Summary Cards ===== */
+.myposts-summary {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-md);
+}
+
+.myposts-summary-card {
+    padding: var(--space-md) var(--space-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.myposts-summary-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.myposts-summary-icon.green {
+    background: rgba(107, 142, 78, 0.12);
+    color: var(--color-primary-mid);
+}
+
+.myposts-summary-icon.orange {
+    background: rgba(232, 135, 30, 0.12);
+    color: var(--color-accent-orange);
+}
+
+.myposts-summary-icon.dark {
+    background: rgba(58, 90, 64, 0.1);
+    color: var(--color-primary-dark);
+}
+
+.myposts-summary-icon.cream {
+    background: rgba(221, 213, 184, 0.35);
+    color: var(--color-text-secondary);
+}
+
+.myposts-summary-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.myposts-summary-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+}
+
+.myposts-summary-label {
+    font-size: 0.72rem;
+    color: var(--color-text-light);
+}
+
+/* ===== Filters ===== */
+.myposts-filters {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.myposts-filter-tabs {
+    display: flex;
+    background: var(--color-bg-card);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border-light);
+    overflow: hidden;
+}
+
+.myposts-filter-tab {
+    padding: 8px 18px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    transition: all var(--transition-fast);
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+.myposts-filter-tab:hover {
+    color: var(--color-text-primary);
+}
+
+.myposts-filter-tab.active {
+    background: var(--color-primary-dark);
+    color: white;
+}
+
+/* ===== Table ===== */
+.myposts-table-wrapper {
+    overflow: hidden;
+}
+
+.myposts-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.myposts-table thead th {
+    text-align: left;
+    padding: var(--space-md) var(--space-lg);
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid var(--color-border-light);
+    background: rgba(245, 242, 235, 0.5);
+}
+
+.myposts-table tbody tr {
+    transition: background var(--transition-fast);
+}
+
+.myposts-table tbody tr:hover {
+    background: rgba(107, 142, 78, 0.03);
+}
+
+.myposts-table tbody td {
+    padding: var(--space-md) var(--space-lg);
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--color-border-light);
+    color: var(--color-text-primary);
+    vertical-align: middle;
+}
+
+.myposts-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.myposts-title-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.myposts-title-cell span:first-child {
+    font-weight: 600;
+}
+
+.myposts-title-cell small {
+    font-size: 0.72rem;
+    color: var(--color-text-light);
+}
+
+.myposts-stat-cell {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--color-text-secondary);
+}
+
+.myposts-stat-cell svg {
+    font-size: 0.85rem;
+    color: var(--color-text-light);
+}
+
+.myposts-actions {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.myposts-action-btn {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    color: var(--color-text-light);
+    font-size: 0.9rem;
+    transition: all var(--transition-fast);
+}
+
+.myposts-action-btn:hover {
+    background: rgba(107, 142, 78, 0.1);
+    color: var(--color-primary-dark);
+}
+
+.myposts-action-btn.delete:hover {
+    background: rgba(232, 135, 30, 0.1);
+    color: var(--color-accent-orange);
+}
