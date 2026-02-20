@@ -35,7 +35,7 @@
     align-items: center;
     justify-content: center;
     font-size: 1rem;
-    background: rgba(107, 142, 78, 0.1);
+    background: rgba(79, 106, 246, 0.1);
     color: var(--color-primary-mid);
 }
 
@@ -73,7 +73,7 @@
 
 .settings-input:focus {
     border-color: var(--color-primary-mid);
-    box-shadow: 0 0 0 3px rgba(107, 142, 78, 0.12);
+    box-shadow: 0 0 0 3px rgba(79, 106, 246, 0.12);
 }
 
 .settings-textarea {
@@ -90,7 +90,7 @@
 
 .settings-textarea:focus {
     border-color: var(--color-primary-mid);
-    box-shadow: 0 0 0 3px rgba(107, 142, 78, 0.12);
+    box-shadow: 0 0 0 3px rgba(79, 106, 246, 0.12);
 }
 
 .settings-field-hint {

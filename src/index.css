@@ -1,30 +1,30 @@
-/* ===== DESIGN SYSTEM — GreenLeaf CMS ===== */
+/* ===== DESIGN SYSTEM — Inkwell ===== */
 
 :root {
   /* Primary palette */
-  --color-primary-dark: #3A5A40;
-  --color-primary-mid: #6B8E4E;
-  --color-primary-light: #8CB369;
-  --color-neutral-cream: #DDD5B8;
-  --color-accent-orange: #E8871E;
+  --color-primary-dark: #1A1A2E;
+  --color-primary-mid: #4F6AF6;
+  --color-primary-light: #7B8FFA;
+  --color-neutral-cream: #E2E2EA;
+  --color-accent-orange: #4F6AF6;
 
   /* Extended neutrals */
-  --color-bg: #F5F2EB;
+  --color-bg: #FAFAFA;
   --color-bg-card: #FFFFFF;
-  --color-bg-sidebar: #2D4535;
-  --color-text-primary: #1A2E22;
-  --color-text-secondary: #5A6E60;
-  --color-text-light: #8A9A8F;
-  --color-text-on-dark: #E8E4DA;
+  --color-bg-sidebar: #111118;
+  --color-text-primary: #1A1A2E;
+  --color-text-secondary: #6B6B80;
+  --color-text-light: #9494A8;
+  --color-text-on-dark: #E8E8EF;
   --color-text-on-accent: #FFFFFF;
-  --color-border: #D4CDB8;
-  --color-border-light: #E8E4DA;
+  --color-border: #E2E2EA;
+  --color-border-light: #EDEDF2;
 
   /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(42, 69, 53, 0.08);
-  --shadow-md: 0 4px 12px rgba(42, 69, 53, 0.10);
-  --shadow-lg: 0 8px 30px rgba(42, 69, 53, 0.12);
-  --shadow-accent: 0 4px 16px rgba(232, 135, 30, 0.25);
+  --shadow-sm: 0 1px 3px rgba(26, 26, 46, 0.06);
+  --shadow-md: 0 4px 12px rgba(26, 26, 46, 0.08);
+  --shadow-lg: 0 8px 30px rgba(26, 26, 46, 0.10);
+  --shadow-accent: 0 4px 16px rgba(79, 106, 246, 0.20);
 
   /* Spacing scale */
   --space-xs: 4px;
@@ -54,22 +54,22 @@
 
 /* ===== DARK THEME ===== */
 [data-theme="dark"] {
-  --color-bg: #1A1F1C;
-  --color-bg-card: #242B26;
-  --color-bg-sidebar: #151A16;
-  --color-text-primary: #E8E4DA;
-  --color-text-secondary: #A0AFA5;
-  --color-text-light: #6B7A70;
-  --color-text-on-dark: #E8E4DA;
-  --color-border: #3A4A3F;
-  --color-border-light: #2E3B32;
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.25);
-  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.3);
+  --color-bg: #121218;
+  --color-bg-card: #1C1C26;
+  --color-bg-sidebar: #0D0D14;
+  --color-text-primary: #E8E8EF;
+  --color-text-secondary: #9494A8;
+  --color-text-light: #6B6B80;
+  --color-text-on-dark: #E8E8EF;
+  --color-border: #2A2A38;
+  --color-border-light: #222230;
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.25);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.35);
 }
 
 [data-theme="dark"] .header {
-  background: rgba(26, 31, 28, 0.85);
+  background: rgba(18, 18, 24, 0.85);
 }
 
 [data-theme="dark"] .pages-filter-tab.active {
@@ -77,11 +77,11 @@
 }
 
 [data-theme="dark"] .editor-toolbar {
-  background: rgba(36, 43, 38, 0.8);
+  background: rgba(28, 28, 38, 0.8);
 }
 
 [data-theme="dark"] .pages-table thead th {
-  background: rgba(36, 43, 38, 0.5);
+  background: rgba(28, 28, 38, 0.5);
 }
 
 /* ===== RESET ===== */
@@ -188,9 +188,9 @@ h4 {
 }
 
 .btn-primary:hover {
-  background: #D47A18;
+  background: #3B54D4;
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(232, 135, 30, 0.35);
+  box-shadow: 0 6px 20px rgba(79, 106, 246, 0.35);
 }
 
 .btn-primary:active {
@@ -203,7 +203,7 @@ h4 {
 }
 
 .btn-secondary:hover {
-  background: #2D4535;
+  background: #14142A;
   transform: translateY(-1px);
 }
 
@@ -216,7 +216,7 @@ h4 {
 .btn-outline:hover {
   border-color: var(--color-primary-mid);
   color: var(--color-primary-dark);
-  background: rgba(107, 142, 78, 0.06);
+  background: rgba(79, 106, 246, 0.06);
 }
 
 .badge {
@@ -230,7 +230,7 @@ h4 {
 }
 
 .badge-published {
-  background: rgba(107, 142, 78, 0.15);
+  background: rgba(79, 106, 246, 0.15);
   color: var(--color-primary-dark);
 }
 

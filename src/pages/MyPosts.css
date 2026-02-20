@@ -45,12 +45,12 @@
 }
 
 .myposts-summary-icon.green {
-    background: rgba(107, 142, 78, 0.12);
+    background: rgba(79, 106, 246, 0.12);
     color: var(--color-primary-mid);
 }
 
 .myposts-summary-icon.orange {
-    background: rgba(232, 135, 30, 0.12);
+    background: rgba(79, 106, 246, 0.12);
     color: var(--color-accent-orange);
 }
 
@@ -143,7 +143,7 @@
 }
 
 .myposts-table tbody tr:hover {
-    background: rgba(107, 142, 78, 0.03);
+    background: rgba(79, 106, 246, 0.03);
 }
 
 .myposts-table tbody td {
@@ -203,11 +203,11 @@
 }
 
 .myposts-action-btn:hover {
-    background: rgba(107, 142, 78, 0.1);
+    background: rgba(79, 106, 246, 0.1);
     color: var(--color-primary-dark);
 }
 
 .myposts-action-btn.delete:hover {
-    background: rgba(232, 135, 30, 0.1);
+    background: rgba(79, 106, 246, 0.1);
     color: var(--color-accent-orange);
 }

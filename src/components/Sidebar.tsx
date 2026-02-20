@@ -7,7 +7,6 @@ import {
     HiOutlineCog,
     HiOutlineLockClosed,
 } from 'react-icons/hi';
-import { RiLeafLine } from 'react-icons/ri';
 import { useAuth } from '../context/AuthContext';
 import './Sidebar.css';
 
@@ -55,11 +54,11 @@ export default function Sidebar() {
         <aside className="sidebar">
             <div className="sidebar-brand">
                 <div className="sidebar-brand-icon">
-                    <RiLeafLine />
+                    <HiOutlinePencilAlt />
                 </div>
                 <div className="sidebar-brand-text">
-                    <span className="sidebar-brand-name">GreenLeaf</span>
-                    <span className="sidebar-brand-tagline">Blog Platform</span>
+                    <span className="sidebar-brand-name">Inkwell</span>
+                    <span className="sidebar-brand-tagline">Write & Share</span>
                 </div>
             </div>
 

@@ -61,14 +61,14 @@
     align-items: center;
     justify-content: center;
     gap: var(--space-sm);
-    background: rgba(107, 142, 78, 0.03);
+    background: rgba(79, 106, 246, 0.03);
     transition: all var(--transition-fast);
     cursor: pointer;
 }
 
 .write-cover-upload:hover {
     border-color: var(--color-primary-mid);
-    background: rgba(107, 142, 78, 0.06);
+    background: rgba(79, 106, 246, 0.06);
 }
 
 .write-cover-icon {
@@ -115,7 +115,7 @@
 
 .write-title-input:focus {
     border-color: var(--color-primary-mid);
-    box-shadow: 0 0 0 3px rgba(107, 142, 78, 0.12);
+    box-shadow: 0 0 0 3px rgba(79, 106, 246, 0.12);
 }
 
 .write-title-input::placeholder {
@@ -139,7 +139,7 @@
 
 .write-tags-container:focus-within {
     border-color: var(--color-primary-mid);
-    box-shadow: 0 0 0 3px rgba(107, 142, 78, 0.12);
+    box-shadow: 0 0 0 3px rgba(79, 106, 246, 0.12);
 }
 
 .write-tag {
@@ -148,7 +148,7 @@
     gap: 4px;
     padding: 3px 10px;
     border-radius: var(--radius-full);
-    background: rgba(107, 142, 78, 0.12);
+    background: rgba(79, 106, 246, 0.12);
     color: var(--color-primary-dark);
     font-size: 0.78rem;
     font-weight: 500;
@@ -208,7 +208,7 @@
 }
 
 .write-toolbar-btn:hover {
-    background: rgba(107, 142, 78, 0.1);
+    background: rgba(79, 106, 246, 0.1);
     color: var(--color-primary-dark);
 }
 
@@ -322,9 +322,9 @@
 
 .write-tips {
     padding: var(--space-md);
-    background: rgba(107, 142, 78, 0.06);
+    background: rgba(79, 106, 246, 0.06);
     border-radius: var(--radius-md);
-    border: 1px solid rgba(107, 142, 78, 0.15);
+    border: 1px solid rgba(79, 106, 246, 0.15);
 }
 
 .write-tips h4 {

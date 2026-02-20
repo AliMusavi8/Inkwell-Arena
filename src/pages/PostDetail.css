@@ -47,7 +47,7 @@
     font-size: 0.72rem;
     font-weight: 600;
     color: var(--color-primary-dark);
-    background: rgba(107, 142, 78, 0.12);
+    background: rgba(79, 106, 246, 0.12);
     text-transform: uppercase;
     letter-spacing: 0.04em;
     width: fit-content;
@@ -121,9 +121,9 @@
     border-radius: var(--radius-full);
     font-size: 0.75rem;
     font-weight: 500;
-    background: rgba(107, 142, 78, 0.08);
+    background: rgba(79, 106, 246, 0.08);
     color: var(--color-primary-dark);
-    border: 1px solid rgba(107, 142, 78, 0.15);
+    border: 1px solid rgba(79, 106, 246, 0.15);
 }
 
 /* Content */
@@ -167,7 +167,7 @@
     border-left: 3px solid var(--color-primary-mid);
     padding: var(--space-md) var(--space-lg);
     margin: var(--space-lg) 0;
-    background: rgba(107, 142, 78, 0.04);
+    background: rgba(79, 106, 246, 0.04);
     border-radius: 0 var(--radius-md) var(--radius-md) 0;
     font-style: italic;
     color: var(--color-text-secondary);
@@ -217,7 +217,7 @@
 }
 
 .post-detail-action-btn.liked {
-    background: rgba(232, 135, 30, 0.08);
+    background: rgba(79, 106, 246, 0.08);
     border-color: var(--color-accent-orange);
     color: var(--color-accent-orange);
 }

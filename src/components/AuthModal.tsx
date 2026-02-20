@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { RiLeafLine } from 'react-icons/ri';
-import { HiOutlineEye } from 'react-icons/hi';
+import { HiOutlineEye, HiOutlinePencilAlt } from 'react-icons/hi';
 import './AuthModal.css';
 
 export default function AuthModal() {
@@ -26,9 +25,9 @@ export default function AuthModal() {
             <div className="auth-modal">
                 <div className="auth-modal-header">
                     <div className="auth-brand-icon">
-                        <RiLeafLine />
+                        <HiOutlinePencilAlt />
                     </div>
-                    <h2>Welcome to GreenLeaf</h2>
+                    <h2>Welcome to Inkwell</h2>
                     <p>Share your ideas with the world</p>
                 </div>
 

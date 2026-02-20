@@ -4,7 +4,7 @@
     left: var(--sidebar-width);
     right: 0;
     height: var(--header-height);
-    background: rgba(245, 242, 235, 0.85);
+    background: rgba(250, 250, 250, 0.85);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--color-border-light);
@@ -62,7 +62,7 @@
 
 .header-search-input:focus {
     border-color: var(--color-primary-mid);
-    box-shadow: 0 0 0 3px rgba(107, 142, 78, 0.12);
+    box-shadow: 0 0 0 3px rgba(79, 106, 246, 0.12);
     width: 340px;
 }
 
@@ -95,7 +95,7 @@
 }
 
 .header-icon-btn:hover {
-    background: rgba(107, 142, 78, 0.08);
+    background: rgba(79, 106, 246, 0.08);
     color: var(--color-primary-dark);
 }
 
@@ -127,7 +127,7 @@
 }
 
 .header-user-btn:hover {
-    background: rgba(107, 142, 78, 0.08);
+    background: rgba(79, 106, 246, 0.08);
 }
 
 .header-user-avatar {
@@ -230,11 +230,11 @@
 }
 
 .notification-item:hover {
-    background: rgba(107, 142, 78, 0.04);
+    background: rgba(79, 106, 246, 0.04);
 }
 
 .notification-item.unread {
-    background: rgba(107, 142, 78, 0.06);
+    background: rgba(79, 106, 246, 0.06);
 }
 
 .notification-icon {
@@ -249,12 +249,12 @@
 }
 
 .notification-icon.green {
-    background: rgba(107, 142, 78, 0.12);
+    background: rgba(79, 106, 246, 0.12);
     color: var(--color-primary-mid);
 }
 
 .notification-icon.orange {
-    background: rgba(232, 135, 30, 0.12);
+    background: rgba(79, 106, 246, 0.12);
     color: var(--color-accent-orange);
 }
 

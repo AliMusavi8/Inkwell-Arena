@@ -95,7 +95,7 @@ export default function Header() {
         <header className="header">
             <div className="header-left">
                 <div className="header-breadcrumb">
-                    <span>GreenLeaf</span>
+                    <span>Inkwell</span>
                     <span className="header-breadcrumb-separator">/</span>
                     <span className="header-breadcrumb-current">{currentRoute}</span>
                 </div>

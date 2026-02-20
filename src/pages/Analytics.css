@@ -71,12 +71,12 @@
 }
 
 .analytics-stat-card:nth-child(2) .analytics-stat-icon {
-    background: rgba(232, 135, 30, 0.1);
+    background: rgba(79, 106, 246, 0.1);
     color: var(--color-accent-orange);
 }
 
 .analytics-stat-card:nth-child(3) .analytics-stat-icon {
-    background: rgba(107, 142, 78, 0.1);
+    background: rgba(79, 106, 246, 0.1);
     color: var(--color-primary-mid);
 }
 
@@ -109,7 +109,7 @@
 }
 
 .analytics-stat-change.up {
-    background: rgba(107, 142, 78, 0.1);
+    background: rgba(79, 106, 246, 0.1);
     color: var(--color-primary-mid);
 }
 
@@ -216,12 +216,12 @@
 }
 
 .analytics-top-rank.gold {
-    background: rgba(232, 135, 30, 0.15);
+    background: rgba(79, 106, 246, 0.15);
     color: var(--color-accent-orange);
 }
 
 .analytics-top-rank.silver {
-    background: rgba(107, 142, 78, 0.12);
+    background: rgba(79, 106, 246, 0.12);
     color: var(--color-primary-mid);
 }
 

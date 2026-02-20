@@ -4,7 +4,7 @@
     top: 0;
     bottom: 0;
     width: var(--sidebar-width);
-    background: linear-gradient(180deg, var(--color-bg-sidebar) 0%, #243A2C 100%);
+    background: linear-gradient(180deg, var(--color-bg-sidebar) 0%, #0A0A12 100%);
     display: flex;
     flex-direction: column;
     z-index: 100;
@@ -23,7 +23,7 @@
 .sidebar-brand-icon {
     width: 38px;
     height: 38px;
-    background: linear-gradient(135deg, var(--color-primary-mid), var(--color-accent-orange));
+    background: linear-gradient(135deg, var(--color-primary-mid), #3B54D4);
     border-radius: var(--radius-md);
     display: flex;
     align-items: center;
@@ -31,7 +31,7 @@
     font-size: 1.2rem;
     color: white;
     flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(232, 135, 30, 0.3);
+    box-shadow: 0 2px 8px rgba(79, 106, 246, 0.3);
 }
 
 .sidebar-brand-text {
@@ -93,7 +93,7 @@
 
 .sidebar-link.active {
     color: #FFFFFF;
-    background: rgba(107, 142, 78, 0.2);
+    background: rgba(79, 106, 246, 0.2);
 }
 
 .sidebar-link.active::before {
@@ -214,7 +214,7 @@
 .sidebar-guest-btn {
     padding: 9px;
     border-radius: var(--radius-md);
-    background: linear-gradient(135deg, var(--color-accent-orange), #D47A18);
+    background: linear-gradient(135deg, var(--color-accent-orange), #3B54D4);
     color: white;
     font-size: 0.82rem;
     font-weight: 600;
@@ -225,6 +225,6 @@
 }
 
 .sidebar-guest-btn:hover {
-    box-shadow: 0 4px 14px rgba(232, 135, 30, 0.35);
+    box-shadow: 0 4px 14px rgba(79, 106, 246, 0.35);
     transform: translateY(-1px);
 }
