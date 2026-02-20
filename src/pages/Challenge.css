@@ -14,6 +14,40 @@
     font-size: 0.9rem;
 }
 
+/* Active Challenge Banner */
+.active-challenge-banner {
+    padding: var(--space-lg);
+    border: 2px solid var(--color-primary-mid);
+    background: rgba(79, 106, 246, 0.04);
+}
+
+.active-challenge-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.active-challenge-icon {
+    font-size: 1.8rem;
+}
+
+.active-challenge-info h3 {
+    margin: 0 0 2px;
+    font-size: 1rem;
+}
+
+.active-challenge-info p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+}
+
+.active-challenge-actions {
+    display: flex;
+    gap: var(--space-md);
+}
+
 /* Conquests */
 .challenge-conquests {
     padding: var(--space-lg);
@@ -74,6 +108,33 @@
 .countdown {
     font-weight: 700;
     font-variant-numeric: tabular-nums;
+}
+
+/* Under Siege (loser perspective) */
+.challenge-under-siege {
+    padding: var(--space-lg);
+    border: 2px solid #E74C6F;
+    background: rgba(231, 76, 111, 0.03);
+}
+
+.challenge-under-siege h3 {
+    margin-bottom: 4px;
+    font-size: 1rem;
+    color: #E74C6F;
+}
+
+.siege-desc {
+    font-size: 0.82rem;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-md);
+}
+
+.siege-item {
+    background: rgba(231, 76, 111, 0.06);
+}
+
+.siege-timer {
+    color: #E74C6F !important;
 }
 
 /* Users Section */

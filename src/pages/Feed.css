@@ -14,9 +14,142 @@
     font-size: 0.9rem;
 }
 
+/* ===== Conquest Banner ===== */
+.conquest-banner {
+    padding: var(--space-md) var(--space-lg);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(135deg, rgba(79, 106, 246, 0.06), rgba(231, 76, 111, 0.06));
+    border: 1.5px solid rgba(79, 106, 246, 0.2);
+}
+
+.conquest-banner-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--color-primary-mid);
+    margin-bottom: var(--space-sm);
+}
+
+.conquest-banner-icon {
+    font-size: 1rem;
+}
+
+.conquest-banner-accounts {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+.conquest-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px 6px 6px;
+    border-radius: var(--radius-full);
+    border: 1.5px solid var(--color-border);
+    background: var(--color-bg-card);
+    font-family: inherit;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.conquest-chip:hover {
+    border-color: var(--color-primary-mid);
+    box-shadow: 0 0 0 3px rgba(79, 106, 246, 0.08);
+}
+
+.conquest-chip.active {
+    border-color: #E74C6F;
+    background: rgba(231, 76, 111, 0.06);
+    box-shadow: 0 0 0 3px rgba(231, 76, 111, 0.1);
+}
+
+.conquest-chip-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.55rem;
+    font-weight: 700;
+    color: white;
+}
+
+.conquest-chip-name {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.conquest-chip-timer {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 0.7rem;
+    color: var(--color-accent-orange);
+    font-variant-numeric: tabular-nums;
+}
+
+.conquest-chip-timer svg {
+    font-size: 0.75rem;
+}
+
 /* ===== Compose Box ===== */
 .compose-box {
     padding: var(--space-lg);
+    transition: all 0.3s ease;
+}
+
+.compose-box.compose-as-other {
+    border: 2px solid #E74C6F;
+    box-shadow: 0 0 20px rgba(231, 76, 111, 0.08);
+}
+
+.compose-as-banner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    margin-bottom: var(--space-md);
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, rgba(231, 76, 111, 0.08), rgba(231, 76, 111, 0.03));
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #E74C6F;
+}
+
+.compose-as-banner svg {
+    font-size: 0.9rem;
+}
+
+.compose-as-timer {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 0.72rem;
+    color: var(--color-accent-orange);
+    margin-left: auto;
+}
+
+.compose-as-cancel {
+    padding: 3px 10px;
+    border-radius: var(--radius-md);
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    background: none;
+    border: 1px solid var(--color-border);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    font-family: inherit;
+    margin-left: 8px;
+}
+
+.compose-as-cancel:hover {
+    border-color: var(--color-text-secondary);
 }
 
 .compose-row {
@@ -35,6 +168,7 @@
     font-weight: 700;
     color: white;
     flex-shrink: 0;
+    transition: background 0.3s ease;
 }
 
 .compose-input {
@@ -65,30 +199,32 @@
     border-top: 1px solid var(--color-border-light);
 }
 
-.compose-footer-left {
-    display: flex;
-    align-items: center;
-    gap: var(--space-md);
-}
-
 .compose-char-count {
     font-size: 0.75rem;
     color: var(--color-text-light);
 }
 
-.compose-as-select {
-    padding: 5px 10px;
-    border: 1.5px solid var(--color-border);
-    border-radius: var(--radius-md);
-    font-size: 0.75rem;
-    color: var(--color-text-primary);
-    background: var(--color-bg-card);
-    font-family: inherit;
-    cursor: pointer;
-}
-
 .compose-btn {
     padding: 8px 24px;
+}
+
+.compose-btn-conquest {
+    background: #E74C6F;
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.compose-btn-conquest:hover {
+    background: #d4405e;
+}
+
+.compose-btn-conquest:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 /* ===== Timeline ===== */
@@ -114,6 +250,10 @@
 
 .tweet-card:hover {
     background: rgba(79, 106, 246, 0.02);
+}
+
+.tweet-card.tweet-conquered {
+    border-left: 3px solid #E74C6F;
 }
 
 .tweet-avatar {
@@ -163,9 +303,17 @@
 }
 
 .tweet-via {
+    display: flex;
+    align-items: center;
+    gap: 5px;
     font-size: 0.72rem;
-    color: var(--color-accent-orange);
+    color: #E74C6F;
     margin-top: 2px;
+    font-weight: 500;
+}
+
+.tweet-via svg {
+    font-size: 0.8rem;
 }
 
 .tweet-text {
@@ -292,4 +440,10 @@
 .sidebar-logout-btn:hover {
     color: white;
     background: rgba(255, 255, 255, 0.06);
+}
+
+/* Countdown */
+.countdown {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
 }

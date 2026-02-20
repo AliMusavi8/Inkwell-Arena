@@ -186,10 +186,30 @@ export async function apiGetActiveAccess(): Promise<ConqueredAccountData[]> {
     return request<ConqueredAccountData[]>("/challenges/active-access");
 }
 
+export async function apiGetUnderSiege(): Promise<ConqueredAccountData[]> {
+    return request<ConqueredAccountData[]>("/challenges/under-siege");
+}
+
 export async function apiGetChallengeHistory(): Promise<ChallengeData[]> {
     return request<ChallengeData[]>("/challenges/history");
 }
 
 export async function apiGetPendingChallenges(): Promise<ChallengeData[]> {
     return request<ChallengeData[]>("/challenges/pending");
+}
+
+export async function apiGetActiveChallenge(): Promise<ChallengeData | null> {
+    try {
+        return await request<ChallengeData>("/challenges/active");
+    } catch {
+        return null; // No active challenge = 404
+    }
+}
+
+export async function apiForfeitChallenge(
+    challengeId: number
+): Promise<ChallengeData> {
+    return request<ChallengeData>(`/challenges/${challengeId}/forfeit`, {
+        method: "PUT",
+    });
 }

@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { GiSwordClash } from 'react-icons/gi';
-import { HiOutlineClock } from 'react-icons/hi';
+import { HiOutlineClock, HiOutlineX } from 'react-icons/hi';
 import { useAuth } from '../context/AuthContext';
 import { useWebSocket } from '../context/WebSocketContext';
 import {
     apiGetAllUsers,
     apiCreateChallenge,
     apiGetChallengeHistory,
+    apiGetActiveChallenge,
+    apiForfeitChallenge,
+    apiGetUnderSiege,
     type UserData,
     type ChallengeData,
     type ConqueredAccountData,
@@ -17,6 +21,7 @@ import './Challenge.css';
 export default function Challenge() {
     const { user, refreshConquests, conqueredAccounts } = useAuth();
     const { lastMessage, sendMessage } = useWebSocket();
+    const location = useLocation();
     const [users, setUsers] = useState<UserData[]>([]);
     const [history, setHistory] = useState<ChallengeData[]>([]);
     const [loading, setLoading] = useState(true);
@@ -27,14 +32,41 @@ export default function Challenge() {
         isChallenger: boolean;
     } | null>(null);
 
+    // Waiting state for challenger
+    const [waitingFor, setWaitingFor] = useState<{
+        username: string;
+        challengeId: number;
+    } | null>(null);
+
+    // Existing active challenge from DB (for resume/forfeit)
+    const [staleChallenge, setStaleChallenge] = useState<ChallengeData | null>(null);
+    const [underSiege, setUnderSiege] = useState<ConqueredAccountData[]>([]);
+
     useEffect(() => {
         loadData();
+        checkActiveChallenge();
     }, []);
 
-    // Listen for challenge accepted → start game
+    // Check if navigated here after accepting a challenge (defender side)
+    useEffect(() => {
+        const state = location.state as { acceptedChallenge?: { challengeId: number; opponentId: number; opponentUsername: string } } | null;
+        if (state?.acceptedChallenge) {
+            setActiveGame({
+                challengeId: state.acceptedChallenge.challengeId,
+                opponentId: state.acceptedChallenge.opponentId,
+                opponentUsername: state.acceptedChallenge.opponentUsername,
+                isChallenger: false, // defender
+            });
+            // Clear the state so it doesn't re-trigger on navigation
+            window.history.replaceState({}, '');
+        }
+    }, [location.state]);
+
+    // Listen for challenge accepted → start game (challenger side)
     useEffect(() => {
         if (!lastMessage) return;
         if (lastMessage.type === 'challenge_accepted') {
+            setWaitingFor(null); // Close waiting overlay
             setActiveGame({
                 challengeId: lastMessage.challenge_id,
                 opponentId: lastMessage.defender_id,
@@ -46,14 +78,23 @@ export default function Challenge() {
 
     const loadData = async () => {
         try {
-            const [u, h] = await Promise.all([
+            const [u, h, siege] = await Promise.all([
                 apiGetAllUsers(),
                 apiGetChallengeHistory(),
+                apiGetUnderSiege(),
             ]);
             setUsers(u);
             setHistory(h);
+            setUnderSiege(siege);
         } catch { }
         setLoading(false);
+    };
+
+    const checkActiveChallenge = async () => {
+        const active = await apiGetActiveChallenge();
+        if (active) {
+            setStaleChallenge(active);
+        }
     };
 
     const handleChallenge = async (targetUser: UserData) => {
@@ -65,14 +106,48 @@ export default function Challenge() {
                 defender_id: targetUser.id,
                 challenge_id: challenge.id,
             });
-            alert(`Challenge sent to @${targetUser.username}! Waiting for them to accept...`);
+            // Show waiting overlay instead of alert
+            setWaitingFor({
+                username: targetUser.display_name || targetUser.username,
+                challengeId: challenge.id,
+            });
         } catch (err: any) {
+            // Only use alert for actual errors
             alert(err.message || 'Failed to send challenge');
+        }
+    };
+
+    const cancelWaiting = () => {
+        setWaitingFor(null);
+    };
+
+    const handleResume = (challenge: ChallengeData) => {
+        if (!user) return;
+        const isChallenger = challenge.challenger_id === user.id;
+        setActiveGame({
+            challengeId: challenge.id,
+            opponentId: isChallenger ? challenge.defender_id : challenge.challenger_id,
+            opponentUsername: isChallenger ? challenge.defender_username : challenge.challenger_username,
+            isChallenger,
+        });
+        setStaleChallenge(null);
+    };
+
+    const handleForfeit = async (challengeId: number) => {
+        if (!confirm('Are you sure? You will lose and your opponent gets 10 minutes of access to your account.')) return;
+        try {
+            await apiForfeitChallenge(challengeId);
+            setStaleChallenge(null);
+            await refreshConquests();
+            await loadData();
+        } catch (err: any) {
+            alert(err.message || 'Failed to forfeit');
         }
     };
 
     const handleGameComplete = async (_winnerId: number | null) => {
         setActiveGame(null);
+        setStaleChallenge(null);
         await refreshConquests();
         await loadData();
     };
@@ -83,6 +158,7 @@ export default function Challenge() {
 
     return (
         <div className="challenge-page animate-fade-in">
+            {/* TicTacToe Game Modal */}
             {activeGame && user && (
                 <TicTacToe
                     challengeId={activeGame.challengeId}
@@ -93,6 +169,41 @@ export default function Challenge() {
                     isChallenger={activeGame.isChallenger}
                     onComplete={handleGameComplete}
                 />
+            )}
+
+            {/* Active Challenge Banner (Resume/Forfeit) */}
+            {staleChallenge && !activeGame && (
+                <div className="card active-challenge-banner">
+                    <div className="active-challenge-info">
+                        <span className="active-challenge-icon">⚔️</span>
+                        <div>
+                            <h3>Active Game</h3>
+                            <p>You have an ongoing game against <strong>@{staleChallenge.challenger_id === user?.id ? staleChallenge.defender_username : staleChallenge.challenger_username}</strong></p>
+                        </div>
+                    </div>
+                    <div className="active-challenge-actions">
+                        <button className="btn btn-primary" onClick={() => handleResume(staleChallenge)}>
+                            ▶ Resume Game
+                        </button>
+                        <button className="btn waiting-cancel-btn" onClick={() => handleForfeit(staleChallenge.id)}>
+                            🏳️ Forfeit
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Waiting Overlay */}
+            {waitingFor && (
+                <div className="waiting-overlay">
+                    <div className="waiting-modal">
+                        <div className="waiting-spinner" />
+                        <h3>⚔️ Challenge Sent!</h3>
+                        <p>Waiting for <strong>@{waitingFor.username}</strong> to accept...</p>
+                        <button className="btn waiting-cancel-btn" onClick={cancelWaiting}>
+                            <HiOutlineX /> Cancel
+                        </button>
+                    </div>
+                </div>
             )}
 
             <div className="challenge-header">
@@ -116,6 +227,29 @@ export default function Challenge() {
                                     <span className="conquest-name">@{acc.username}</span>
                                     <span className="conquest-timer">
                                         <HiOutlineClock /> Expires: <CountdownTimer expiresAt={acc.expires_at} />
+                                    </span>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {/* Under Siege - someone has access to YOUR account */}
+            {underSiege.length > 0 && (
+                <div className="card challenge-under-siege">
+                    <h3>⚠️ Under Siege</h3>
+                    <p className="siege-desc">These users can post on your account!</p>
+                    <div className="conquest-list">
+                        {underSiege.map((acc: ConqueredAccountData) => (
+                            <div key={acc.user_id} className="conquest-item siege-item">
+                                <div className="conquest-avatar" style={{ background: acc.avatar_color }}>
+                                    {(acc.display_name || acc.username).slice(0, 2).toUpperCase()}
+                                </div>
+                                <div className="conquest-info">
+                                    <span className="conquest-name">@{acc.username}</span>
+                                    <span className="conquest-timer siege-timer">
+                                        <HiOutlineClock /> Access ends in: <CountdownTimer expiresAt={acc.expires_at} />
                                     </span>
                                 </div>
                             </div>
@@ -148,7 +282,7 @@ export default function Challenge() {
                                 <button
                                     className="btn btn-primary challenge-btn"
                                     onClick={() => handleChallenge(u)}
-                                    disabled={!u.is_online}
+                                    disabled={!u.is_online || !!waitingFor}
                                 >
                                     <GiSwordClash /> Challenge
                                 </button>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
     HiOutlineSearch,
     HiOutlineBell,
@@ -25,9 +25,10 @@ interface PendingChallenge {
 
 export default function Header() {
     const location = useLocation();
+    const navigate = useNavigate();
     const currentRoute = routeNames[location.pathname] || 'Feed';
     const { user } = useAuth();
-    const { lastMessage } = useWebSocket();
+    const { lastMessage, sendMessage } = useWebSocket();
 
     const [darkMode, setDarkMode] = useState(() => {
         return document.documentElement.getAttribute('data-theme') === 'dark';
@@ -52,10 +53,29 @@ export default function Header() {
         }
     }, [lastMessage]);
 
-    const handleAccept = async (challengeId: number) => {
+    const handleAccept = async (challenge: PendingChallenge) => {
         try {
-            await apiAcceptChallenge(challengeId);
-            setPendingChallenges(prev => prev.filter(c => c.challenge_id !== challengeId));
+            await apiAcceptChallenge(challenge.challenge_id);
+            setPendingChallenges(prev => prev.filter(c => c.challenge_id !== challenge.challenge_id));
+            setShowNotifications(false);
+
+            // Notify the challenger via WebSocket that we accepted
+            sendMessage({
+                type: 'challenge_accepted',
+                challenger_id: challenge.challenger_id,
+                challenge_id: challenge.challenge_id,
+            });
+
+            // Navigate to Challenge page and start the game (defender side)
+            navigate('/challenge', {
+                state: {
+                    acceptedChallenge: {
+                        challengeId: challenge.challenge_id,
+                        opponentId: challenge.challenger_id,
+                        opponentUsername: challenge.challenger_username,
+                    },
+                },
+            });
         } catch { }
     };
 
@@ -128,7 +148,7 @@ export default function Header() {
                                                     <div className="notification-actions">
                                                         <button
                                                             className="notif-accept-btn"
-                                                            onClick={() => handleAccept(c.challenge_id)}
+                                                            onClick={() => handleAccept(c)}
                                                         >
                                                             Accept
                                                         </button>

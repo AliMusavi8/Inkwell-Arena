@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 import {
     HiOutlineHeart,
     HiHeart,
+    HiOutlineClock,
 } from 'react-icons/hi';
+import { GiSwordClash } from 'react-icons/gi';
 import { useAuth } from '../context/AuthContext';
 import { apiGetPosts, apiCreatePost, apiToggleLike, type PostData, type ConqueredAccountData } from '../api';
 import './Feed.css';
@@ -20,6 +22,26 @@ function timeAgo(dateStr: string): string {
     return `${days}d ago`;
 }
 
+function CountdownTimer({ expiresAt }: { expiresAt: string }) {
+    const [timeLeft, setTimeLeft] = useState('');
+
+    useEffect(() => {
+        const update = () => {
+            const now = new Date();
+            const expires = new Date(expiresAt);
+            const diff = Math.max(0, Math.floor((expires.getTime() - now.getTime()) / 1000));
+            const min = Math.floor(diff / 60);
+            const sec = diff % 60;
+            setTimeLeft(`${min}:${sec.toString().padStart(2, '0')}`);
+        };
+        update();
+        const interval = setInterval(update, 1000);
+        return () => clearInterval(interval);
+    }, [expiresAt]);
+
+    return <span className="countdown">{timeLeft}</span>;
+}
+
 export default function Feed() {
     const { user, conqueredAccounts } = useAuth();
     const [posts, setPosts] = useState<PostData[]>([]);
@@ -27,6 +49,8 @@ export default function Feed() {
     const [postAsUserId, setPostAsUserId] = useState<number | null>(null);
     const [loading, setLoading] = useState(true);
     const [posting, setPosting] = useState(false);
+
+    const selectedConquest = conqueredAccounts.find(a => a.user_id === postAsUserId) || null;
 
     useEffect(() => {
         loadPosts();
@@ -78,15 +102,65 @@ export default function Feed() {
                 </div>
             </div>
 
+            {/* Conquered Accounts Banner */}
+            {conqueredAccounts.length > 0 && (
+                <div className="conquest-banner">
+                    <div className="conquest-banner-header">
+                        <GiSwordClash className="conquest-banner-icon" />
+                        <span>You have conquered accounts!</span>
+                    </div>
+                    <div className="conquest-banner-accounts">
+                        {conqueredAccounts.map((acc: ConqueredAccountData) => (
+                            <button
+                                key={acc.user_id}
+                                className={`conquest-chip ${postAsUserId === acc.user_id ? 'active' : ''}`}
+                                onClick={() => setPostAsUserId(postAsUserId === acc.user_id ? null : acc.user_id)}
+                            >
+                                <div className="conquest-chip-avatar" style={{ background: acc.avatar_color }}>
+                                    {(acc.display_name || acc.username).slice(0, 2).toUpperCase()}
+                                </div>
+                                <span className="conquest-chip-name">@{acc.username}</span>
+                                <span className="conquest-chip-timer">
+                                    <HiOutlineClock />
+                                    <CountdownTimer expiresAt={acc.expires_at} />
+                                </span>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            )}
+
             {/* Compose Box */}
-            <div className="card compose-box">
+            <div className={`card compose-box ${selectedConquest ? 'compose-as-other' : ''}`}>
+                {/* "Posting as" indicator */}
+                {selectedConquest && (
+                    <div className="compose-as-banner">
+                        <GiSwordClash />
+                        <span>Posting as <strong>@{selectedConquest.username}</strong></span>
+                        <span className="compose-as-timer">
+                            <HiOutlineClock /> <CountdownTimer expiresAt={selectedConquest.expires_at} />
+                        </span>
+                        <button className="compose-as-cancel" onClick={() => setPostAsUserId(null)}>
+                            ✕ Cancel
+                        </button>
+                    </div>
+                )}
                 <div className="compose-row">
-                    <div className="compose-avatar" style={{ background: user?.avatar_color || '#4F6AF6' }}>
-                        {userInitials}
+                    <div
+                        className="compose-avatar"
+                        style={{ background: selectedConquest?.avatar_color || user?.avatar_color || '#4F6AF6' }}
+                    >
+                        {selectedConquest
+                            ? (selectedConquest.display_name || selectedConquest.username).slice(0, 2).toUpperCase()
+                            : userInitials}
                     </div>
                     <textarea
                         className="compose-input"
-                        placeholder="What's on your mind?"
+                        placeholder={
+                            selectedConquest
+                                ? `Write something as @${selectedConquest.username}...`
+                                : "What's on your mind?"
+                        }
                         value={newPost}
                         onChange={e => setNewPost(e.target.value)}
                         maxLength={280}
@@ -94,29 +168,13 @@ export default function Feed() {
                     />
                 </div>
                 <div className="compose-footer">
-                    <div className="compose-footer-left">
-                        <span className="compose-char-count">{newPost.length}/280</span>
-                        {conqueredAccounts.length > 0 && (
-                            <select
-                                className="compose-as-select"
-                                value={postAsUserId || ''}
-                                onChange={e => setPostAsUserId(e.target.value ? Number(e.target.value) : null)}
-                            >
-                                <option value="">Post as yourself</option>
-                                {conqueredAccounts.map((acc: ConqueredAccountData) => (
-                                    <option key={acc.user_id} value={acc.user_id}>
-                                        Post as @{acc.username} ⏱️ {getTimeLeft(acc.expires_at)}
-                                    </option>
-                                ))}
-                            </select>
-                        )}
-                    </div>
+                    <span className="compose-char-count">{newPost.length}/280</span>
                     <button
-                        className="btn btn-primary compose-btn"
+                        className={`btn compose-btn ${selectedConquest ? 'compose-btn-conquest' : 'btn-primary'}`}
                         onClick={handlePost}
                         disabled={!newPost.trim() || posting}
                     >
-                        {posting ? 'Posting...' : 'Post'}
+                        {posting ? 'Posting...' : selectedConquest ? `⚔️ Post as @${selectedConquest.username}` : 'Post'}
                     </button>
                 </div>
             </div>
@@ -129,7 +187,7 @@ export default function Feed() {
                     <div className="feed-empty">No posts yet. Be the first to share something!</div>
                 ) : (
                     posts.map((post) => (
-                        <div className="card tweet-card" key={post.id}>
+                        <div className={`card tweet-card ${post.posted_by_username ? 'tweet-conquered' : ''}`} key={post.id}>
                             <div className="tweet-avatar" style={{ background: post.author_avatar_color }}>
                                 {(post.author_display_name || post.author_username)
                                     .split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)}
@@ -145,7 +203,7 @@ export default function Feed() {
                                 </div>
                                 {post.posted_by_username && (
                                     <div className="tweet-via">
-                                        ⚔️ posted via <strong>@{post.posted_by_username}</strong>
+                                        <GiSwordClash /> conquered by <strong>@{post.posted_by_username}</strong>
                                     </div>
                                 )}
                                 <div className="tweet-text">{post.text}</div>
@@ -165,13 +223,4 @@ export default function Feed() {
             </div>
         </div>
     );
-}
-
-function getTimeLeft(isoStr: string): string {
-    const now = new Date();
-    const expires = new Date(isoStr);
-    const diff = Math.max(0, Math.floor((expires.getTime() - now.getTime()) / 1000));
-    const min = Math.floor(diff / 60);
-    const sec = diff % 60;
-    return `${min}:${sec.toString().padStart(2, '0')}`;
 }

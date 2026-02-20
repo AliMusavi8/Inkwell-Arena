@@ -173,6 +173,38 @@ def get_active_access(
     return result
 
 
+@router.get("/under-siege", response_model=List[ConqueredAccount])
+def get_under_siege(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Get who currently has access to YOUR account (loser perspective)."""
+    now = datetime.utcnow()
+    challenges = (
+        db.query(Challenge)
+        .filter(
+            Challenge.loser_id == current_user.id,
+            Challenge.status == "completed",
+            Challenge.access_expires_at > now,
+        )
+        .all()
+    )
+
+    result = []
+    for c in challenges:
+        winner = db.query(User).filter(User.id == c.winner_id).first()
+        if winner:
+            result.append(ConqueredAccount(
+                user_id=winner.id,
+                username=winner.username,
+                display_name=winner.display_name,
+                avatar_color=winner.avatar_color,
+                expires_at=c.access_expires_at,
+                challenge_id=c.id,
+            ))
+    return result
+
+
 @router.get("/history", response_model=List[ChallengeOut])
 def get_challenge_history(
     db: Session = Depends(get_db),
@@ -208,3 +240,59 @@ def get_pending_challenges(
         .all()
     )
     return [challenge_to_out(c) for c in challenges]
+
+
+@router.get("/active", response_model=ChallengeOut)
+def get_active_challenge(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Get the user's current active challenge (if any)."""
+    challenge = (
+        db.query(Challenge)
+        .filter(
+            Challenge.status == "active",
+            or_(
+                Challenge.challenger_id == current_user.id,
+                Challenge.defender_id == current_user.id,
+            ),
+        )
+        .first()
+    )
+    if not challenge:
+        raise HTTPException(status_code=404, detail="No active challenge")
+    return challenge_to_out(challenge)
+
+
+@router.put("/{challenge_id}/forfeit", response_model=ChallengeOut)
+def forfeit_challenge(
+    challenge_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Forfeit a challenge — the forfeiting user loses."""
+    challenge = db.query(Challenge).filter(Challenge.id == challenge_id).first()
+    if not challenge:
+        raise HTTPException(status_code=404, detail="Challenge not found")
+    if challenge.status not in ["active", "pending"]:
+        raise HTTPException(status_code=400, detail="Challenge cannot be forfeited")
+    if current_user.id not in [challenge.challenger_id, challenge.defender_id]:
+        raise HTTPException(status_code=403, detail="Not part of this challenge")
+
+    now = datetime.utcnow()
+    challenge.status = "completed"
+    challenge.completed_at = now
+
+    # Forfeiting user loses — opponent wins
+    if current_user.id == challenge.challenger_id:
+        challenge.winner_id = challenge.defender_id
+        challenge.loser_id = challenge.challenger_id
+    else:
+        challenge.winner_id = challenge.challenger_id
+        challenge.loser_id = challenge.defender_id
+
+    challenge.access_expires_at = now + timedelta(minutes=CONQUEST_DURATION_MINUTES)
+
+    db.commit()
+    db.refresh(challenge)
+    return challenge_to_out(challenge)
