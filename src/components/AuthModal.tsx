@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { HiOutlineEye, HiOutlinePencilAlt } from 'react-icons/hi';
+import { HiOutlineEye } from 'react-icons/hi';
+import inkwellLogo from '../assets/inkwell-logo.png';
 import './AuthModal.css';
 
 export default function AuthModal() {
@@ -25,7 +26,7 @@ export default function AuthModal() {
             <div className="auth-modal">
                 <div className="auth-modal-header">
                     <div className="auth-brand-icon">
-                        <HiOutlinePencilAlt />
+                        <img src={inkwellLogo} alt="Inkwell" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '14px' }} />
                     </div>
                     <h2>Welcome to Inkwell</h2>
                     <p>Share your ideas with the world</p>

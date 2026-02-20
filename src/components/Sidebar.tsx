@@ -8,6 +8,7 @@ import {
     HiOutlineLockClosed,
 } from 'react-icons/hi';
 import { useAuth } from '../context/AuthContext';
+import inkwellLogo from '../assets/inkwell-logo.png';
 import './Sidebar.css';
 
 const navItems = [
@@ -54,7 +55,7 @@ export default function Sidebar() {
         <aside className="sidebar">
             <div className="sidebar-brand">
                 <div className="sidebar-brand-icon">
-                    <HiOutlinePencilAlt />
+                    <img src={inkwellLogo} alt="Inkwell" className="sidebar-brand-logo" />
                 </div>
                 <div className="sidebar-brand-text">
                     <span className="sidebar-brand-name">Inkwell</span>
