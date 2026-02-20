@@ -1,0 +1,226 @@
+.challenge-page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    max-width: 700px;
+}
+
+.challenge-header h1 {
+    margin-bottom: 4px;
+}
+
+.challenge-header p {
+    color: var(--color-text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Conquests */
+.challenge-conquests {
+    padding: var(--space-lg);
+}
+
+.challenge-conquests h3 {
+    margin-bottom: var(--space-md);
+    font-size: 1rem;
+}
+
+.conquest-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.conquest-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    background: rgba(79, 106, 246, 0.06);
+}
+
+.conquest-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+}
+
+.conquest-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.conquest-name {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.conquest-timer {
+    font-size: 0.72rem;
+    color: var(--color-accent-orange);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.countdown {
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Users Section */
+.challenge-users-section {
+    padding: var(--space-lg);
+}
+
+.challenge-users-section h3 {
+    margin-bottom: var(--space-md);
+    font-size: 1rem;
+}
+
+.challenge-users-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.challenge-user-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-md);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border-light);
+    transition: all var(--transition-fast);
+}
+
+.challenge-user-row:hover {
+    border-color: var(--color-primary-mid);
+}
+
+.challenge-user-left {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+}
+
+.challenge-user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: white;
+    flex-shrink: 0;
+}
+
+.challenge-user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.challenge-user-name {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.challenge-user-handle {
+    font-size: 0.75rem;
+    color: var(--color-text-light);
+}
+
+.challenge-user-status {
+    font-size: 0.72rem;
+    font-weight: 500;
+    margin-left: var(--space-sm);
+}
+
+.challenge-user-status.online {
+    color: #22C55E;
+}
+
+.challenge-user-status.offline {
+    color: var(--color-text-light);
+}
+
+.challenge-btn {
+    padding: 7px 16px;
+    font-size: 0.8rem;
+}
+
+.challenge-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.challenge-empty {
+    color: var(--color-text-light);
+    font-size: 0.88rem;
+    padding: var(--space-md);
+}
+
+/* History */
+.challenge-history {
+    padding: var(--space-lg);
+}
+
+.challenge-history h3 {
+    margin-bottom: var(--space-md);
+    font-size: 1rem;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border-light);
+    font-size: 0.84rem;
+}
+
+.history-players {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    color: var(--color-text-primary);
+}
+
+.history-vs {
+    color: var(--color-text-light);
+    font-weight: 400;
+    font-size: 0.75rem;
+}
+
+.history-winner {
+    color: var(--color-primary-mid);
+    font-weight: 600;
+}
+
+.history-draw {
+    color: var(--color-text-secondary);
+}
+
+.history-status {
+    color: var(--color-text-light);
+    text-transform: capitalize;
+}

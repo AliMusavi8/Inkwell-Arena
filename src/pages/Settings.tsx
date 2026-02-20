@@ -1,165 +1,76 @@
 import { useState } from 'react';
-import {
-    HiOutlineUser,
-    HiOutlineBell,
-    HiOutlineShieldCheck,
-    HiOutlineLink,
-} from 'react-icons/hi';
+import { useAuth } from '../context/AuthContext';
+import { HiOutlineClock } from 'react-icons/hi';
+import type { ConqueredAccountData } from '../api';
 import './Settings.css';
 
 export default function Settings() {
-    const [emailNotifications, setEmailNotifications] = useState(true);
-    const [weeklyDigest, setWeeklyDigest] = useState(false);
-    const [twoFactor, setTwoFactor] = useState(false);
+    const { user, conqueredAccounts, logout } = useAuth();
+    const [displayName, setDisplayName] = useState(user?.display_name || '');
+    const [bio, setBio] = useState(user?.bio || '');
 
     return (
         <div className="settings-page animate-fade-in">
             <div className="settings-header">
                 <h1>Settings</h1>
-                <p>Manage your profile and preferences</p>
+                <p>Manage your account</p>
             </div>
 
-            {/* Profile Settings */}
             <div className="card settings-section">
-                <div className="settings-section-header">
-                    <div className="settings-section-icon">
-                        <HiOutlineUser />
-                    </div>
-                    <h2>Profile</h2>
-                </div>
+                <h3>Profile</h3>
                 <div className="settings-form">
-                    <div className="settings-row">
-                        <div className="settings-field">
-                            <label>Display Name</label>
-                            <input type="text" className="settings-input" defaultValue="Ali Musavi" />
-                        </div>
-                        <div className="settings-field">
-                            <label>Username</label>
-                            <input type="text" className="settings-input" defaultValue="@alimusavi" />
-                        </div>
+                    <div className="settings-field">
+                        <label>Display Name</label>
+                        <input
+                            type="text"
+                            className="settings-input"
+                            value={displayName}
+                            onChange={e => setDisplayName(e.target.value)}
+                            placeholder="Your display name"
+                        />
                     </div>
                     <div className="settings-field">
                         <label>Bio</label>
                         <textarea
-                            className="settings-textarea"
-                            defaultValue="Writer, developer, and lifelong learner. I write about web development, design, and technology."
+                            className="settings-input"
+                            value={bio}
+                            onChange={e => setBio(e.target.value)}
+                            placeholder="Tell people about yourself"
+                            rows={3}
                         />
-                        <span className="settings-field-hint">
-                            Shown on your public profile. Max 160 characters.
-                        </span>
                     </div>
-                    <div className="settings-field">
-                        <label>Email</label>
-                        <input type="email" className="settings-input" defaultValue="ali@example.com" />
-                    </div>
+                    <button className="btn btn-primary settings-save-btn">
+                        Save Changes
+                    </button>
                 </div>
             </div>
 
-            {/* Social Links */}
+            {conqueredAccounts.length > 0 && (
+                <div className="card settings-section">
+                    <h3>🏆 Active Conquests</h3>
+                    <p className="settings-section-desc">Accounts you've won access to via challenges</p>
+                    <div className="conquest-list-settings">
+                        {conqueredAccounts.map((acc: ConqueredAccountData) => (
+                            <div key={acc.user_id} className="conquest-row">
+                                <div className="conquest-avatar-sm" style={{ background: acc.avatar_color }}>
+                                    {(acc.display_name || acc.username).slice(0, 2).toUpperCase()}
+                                </div>
+                                <span className="conquest-name-sm">@{acc.username}</span>
+                                <span className="conquest-timer-sm">
+                                    <HiOutlineClock /> Expires in 10 min
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+
             <div className="card settings-section">
-                <div className="settings-section-header">
-                    <div className="settings-section-icon">
-                        <HiOutlineLink />
-                    </div>
-                    <h2>Social Links</h2>
-                </div>
-                <div className="settings-form">
-                    <div className="settings-row">
-                        <div className="settings-field">
-                            <label>Website</label>
-                            <input type="url" className="settings-input" placeholder="https://yoursite.com" />
-                        </div>
-                        <div className="settings-field">
-                            <label>Twitter / X</label>
-                            <input type="text" className="settings-input" placeholder="@username" />
-                        </div>
-                    </div>
-                    <div className="settings-row">
-                        <div className="settings-field">
-                            <label>GitHub</label>
-                            <input type="text" className="settings-input" placeholder="username" />
-                        </div>
-                        <div className="settings-field">
-                            <label>LinkedIn</label>
-                            <input type="url" className="settings-input" placeholder="https://linkedin.com/in/..." />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Notification Settings */}
-            <div className="card settings-section">
-                <div className="settings-section-header">
-                    <div className="settings-section-icon">
-                        <HiOutlineBell />
-                    </div>
-                    <h2>Notifications</h2>
-                </div>
-                <div className="settings-form">
-                    <div className="settings-toggle-row">
-                        <div className="settings-toggle-info">
-                            <span className="settings-toggle-label">Email Notifications</span>
-                            <span className="settings-toggle-desc">
-                                Get notified when someone likes or comments on your posts
-                            </span>
-                        </div>
-                        <button
-                            className={`settings-toggle ${emailNotifications ? 'active' : ''}`}
-                            onClick={() => setEmailNotifications(!emailNotifications)}
-                        />
-                    </div>
-                    <div className="settings-toggle-row">
-                        <div className="settings-toggle-info">
-                            <span className="settings-toggle-label">Weekly Digest</span>
-                            <span className="settings-toggle-desc">
-                                Receive a weekly summary of your post performance
-                            </span>
-                        </div>
-                        <button
-                            className={`settings-toggle ${weeklyDigest ? 'active' : ''}`}
-                            onClick={() => setWeeklyDigest(!weeklyDigest)}
-                        />
-                    </div>
-                </div>
-            </div>
-
-            {/* Security Settings */}
-            <div className="card settings-section">
-                <div className="settings-section-header">
-                    <div className="settings-section-icon">
-                        <HiOutlineShieldCheck />
-                    </div>
-                    <h2>Security</h2>
-                </div>
-                <div className="settings-form">
-                    <div className="settings-toggle-row">
-                        <div className="settings-toggle-info">
-                            <span className="settings-toggle-label">Two-Factor Authentication</span>
-                            <span className="settings-toggle-desc">
-                                Add an extra layer of security to your account
-                            </span>
-                        </div>
-                        <button
-                            className={`settings-toggle ${twoFactor ? 'active' : ''}`}
-                            onClick={() => setTwoFactor(!twoFactor)}
-                        />
-                    </div>
-                    <div className="settings-row">
-                        <div className="settings-field">
-                            <label>Password</label>
-                            <input type="password" className="settings-input" defaultValue="••••••••••" />
-                        </div>
-                        <div className="settings-field">
-                            <label>Confirm Password</label>
-                            <input type="password" className="settings-input" placeholder="Confirm new password" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div className="settings-footer">
-                <button className="btn btn-outline">Cancel</button>
-                <button className="btn btn-primary">Save Changes</button>
+                <h3>Account</h3>
+                <p className="settings-section-desc">Manage your account</p>
+                <button className="btn settings-logout-btn" onClick={logout}>
+                    Log Out
+                </button>
             </div>
         </div>
     );

@@ -5,91 +5,70 @@ import {
     HiOutlineBell,
     HiOutlineMoon,
     HiOutlineSun,
-    HiOutlineDocumentText,
-    HiOutlinePhotograph,
-    HiOutlineCog,
 } from 'react-icons/hi';
+import { useAuth } from '../context/AuthContext';
+import { useWebSocket } from '../context/WebSocketContext';
+import { apiAcceptChallenge, apiDeclineChallenge } from '../api';
 import './Header.css';
 
 const routeNames: Record<string, string> = {
     '/': 'Feed',
-    '/write': 'Write',
-    '/my-posts': 'My Posts',
-    '/analytics': 'Analytics',
+    '/challenge': 'Challenge',
     '/settings': 'Settings',
 };
 
-interface Notification {
-    id: number;
-    text: React.ReactNode;
-    time: string;
-    icon: React.ReactNode;
-    iconColor: string;
-    unread: boolean;
+interface PendingChallenge {
+    challenge_id: number;
+    challenger_id: number;
+    challenger_username: string;
 }
-
-const initialNotifications: Notification[] = [
-    {
-        id: 1,
-        text: <><strong>Sara Chen</strong> liked your post "Building Scalable Web Apps"</>,
-        time: '2 minutes ago',
-        icon: <HiOutlineDocumentText />,
-        iconColor: 'green',
-        unread: true,
-    },
-    {
-        id: 2,
-        text: <><strong>David Park</strong> commented on your article</>,
-        time: '1 hour ago',
-        icon: <HiOutlinePhotograph />,
-        iconColor: 'orange',
-        unread: true,
-    },
-    {
-        id: 3,
-        text: <>Your post <strong>"Async/Await Deep Dive"</strong> reached 2,000 views!</>,
-        time: '3 hours ago',
-        icon: <HiOutlineDocumentText />,
-        iconColor: 'green',
-        unread: true,
-    },
-    {
-        id: 4,
-        text: <><strong>Emma Wilson</strong> started following you</>,
-        time: '5 hours ago',
-        icon: <HiOutlineCog />,
-        iconColor: 'dark',
-        unread: false,
-    },
-    {
-        id: 5,
-        text: <>Draft <strong>"Getting Started with TypeScript"</strong> auto-saved</>,
-        time: 'Yesterday',
-        icon: <HiOutlineDocumentText />,
-        iconColor: 'green',
-        unread: false,
-    },
-];
 
 export default function Header() {
     const location = useLocation();
-    const currentRoute = routeNames[location.pathname] || 'Page Editor';
+    const currentRoute = routeNames[location.pathname] || 'Feed';
+    const { user } = useAuth();
+    const { lastMessage } = useWebSocket();
 
     const [darkMode, setDarkMode] = useState(() => {
         return document.documentElement.getAttribute('data-theme') === 'dark';
     });
+    const [pendingChallenges, setPendingChallenges] = useState<PendingChallenge[]>([]);
     const [showNotifications, setShowNotifications] = useState(false);
-    const [notifications, setNotifications] = useState(initialNotifications);
-
-    const unreadCount = notifications.filter(n => n.unread).length;
 
     useEffect(() => {
         document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
     }, [darkMode]);
 
-    const handleMarkAllRead = () => {
-        setNotifications(prev => prev.map(n => ({ ...n, unread: false })));
+    // Listen for incoming challenges via WebSocket
+    useEffect(() => {
+        if (!lastMessage) return;
+        if (lastMessage.type === 'challenge_received') {
+            setPendingChallenges(prev => [...prev, {
+                challenge_id: lastMessage.challenge_id,
+                challenger_id: lastMessage.challenger_id,
+                challenger_username: lastMessage.challenger_username,
+            }]);
+            setShowNotifications(true);
+        }
+    }, [lastMessage]);
+
+    const handleAccept = async (challengeId: number) => {
+        try {
+            await apiAcceptChallenge(challengeId);
+            setPendingChallenges(prev => prev.filter(c => c.challenge_id !== challengeId));
+        } catch { }
     };
+
+    const handleDecline = async (challengeId: number) => {
+        try {
+            await apiDeclineChallenge(challengeId);
+            setPendingChallenges(prev => prev.filter(c => c.challenge_id !== challengeId));
+        } catch { }
+    };
+
+    const initials = user?.display_name
+        ? user.display_name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
+        : user?.username?.slice(0, 2).toUpperCase() || '??';
 
     return (
         <header className="header">
@@ -105,13 +84,12 @@ export default function Header() {
                     <input
                         type="text"
                         className="header-search-input"
-                        placeholder="Search pages, media..."
+                        placeholder="Search posts..."
                     />
                 </div>
             </div>
 
             <div className="header-right">
-                {/* Dark Mode Toggle */}
                 <button
                     className={`header-icon-btn ${darkMode ? 'theme-active' : ''}`}
                     title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
@@ -120,7 +98,6 @@ export default function Header() {
                     {darkMode ? <HiOutlineSun /> : <HiOutlineMoon />}
                 </button>
 
-                {/* Notifications */}
                 <div className="header-notifications-wrapper">
                     <button
                         className="header-icon-btn"
@@ -128,7 +105,7 @@ export default function Header() {
                         onClick={() => setShowNotifications(!showNotifications)}
                     >
                         <HiOutlineBell />
-                        {unreadCount > 0 && <span className="header-notification-dot" />}
+                        {pendingChallenges.length > 0 && <span className="header-notification-dot" />}
                     </button>
 
                     {showNotifications && (
@@ -136,32 +113,36 @@ export default function Header() {
                             <div className="notifications-overlay" onClick={() => setShowNotifications(false)} />
                             <div className="notifications-dropdown">
                                 <div className="notifications-header">
-                                    <h3>Notifications {unreadCount > 0 && `(${unreadCount})`}</h3>
-                                    {unreadCount > 0 && (
-                                        <button onClick={handleMarkAllRead}>Mark all read</button>
-                                    )}
+                                    <h3>Challenges {pendingChallenges.length > 0 && `(${pendingChallenges.length})`}</h3>
                                 </div>
                                 <div className="notifications-list">
-                                    {notifications.map((notif) => (
-                                        <div
-                                            key={notif.id}
-                                            className={`notification-item ${notif.unread ? 'unread' : ''}`}
-                                        >
-                                            <div className={`notification-icon ${notif.iconColor}`}>
-                                                {notif.icon}
+                                    {pendingChallenges.length === 0 ? (
+                                        <div className="notification-empty">No pending challenges</div>
+                                    ) : (
+                                        pendingChallenges.map((c) => (
+                                            <div key={c.challenge_id} className="notification-item unread">
+                                                <div className="notification-content">
+                                                    <div className="notification-text">
+                                                        <strong>{c.challenger_username}</strong> challenged you to Tic Tac Toe! ⚔️
+                                                    </div>
+                                                    <div className="notification-actions">
+                                                        <button
+                                                            className="notif-accept-btn"
+                                                            onClick={() => handleAccept(c.challenge_id)}
+                                                        >
+                                                            Accept
+                                                        </button>
+                                                        <button
+                                                            className="notif-decline-btn"
+                                                            onClick={() => handleDecline(c.challenge_id)}
+                                                        >
+                                                            Decline
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div className="notification-content">
-                                                <div className="notification-text">{notif.text}</div>
-                                                <div className="notification-time">{notif.time}</div>
-                                            </div>
-                                            {notif.unread && <div className="notification-unread-dot" />}
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="notifications-footer">
-                                    <button onClick={() => setShowNotifications(false)}>
-                                        View all notifications
-                                    </button>
+                                        ))
+                                    )}
                                 </div>
                             </div>
                         </>
@@ -170,7 +151,9 @@ export default function Header() {
 
                 <div className="header-divider" />
                 <button className="header-user-btn">
-                    <div className="header-user-avatar">AM</div>
+                    <div className="header-user-avatar" style={{ background: user?.avatar_color || 'var(--color-primary-mid)' }}>
+                        {initials}
+                    </div>
                 </button>
             </div>
         </header>

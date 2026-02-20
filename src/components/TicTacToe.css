@@ -1,0 +1,214 @@
+.ttt-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+}
+
+.ttt-modal {
+    background: var(--color-bg-card);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl) var(--space-2xl);
+    max-width: 440px;
+    width: 90%;
+    position: relative;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.ttt-close {
+    position: absolute;
+    top: var(--space-md);
+    right: var(--space-md);
+    padding: 6px;
+    border-radius: var(--radius-md);
+    color: var(--color-text-light);
+    font-size: 1.2rem;
+    display: flex;
+    transition: all var(--transition-fast);
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+
+.ttt-close:hover {
+    color: var(--color-text-primary);
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.ttt-header {
+    text-align: center;
+    margin-bottom: var(--space-lg);
+}
+
+.ttt-header h2 {
+    font-size: 1.3rem;
+    margin-bottom: var(--space-md);
+}
+
+.ttt-players {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-lg);
+}
+
+.ttt-player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+}
+
+.ttt-player.active {
+    background: rgba(79, 106, 246, 0.08);
+    box-shadow: 0 0 0 2px var(--color-primary-mid);
+}
+
+.ttt-player-symbol {
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+.ttt-player-symbol.x {
+    color: var(--color-primary-mid);
+}
+
+.ttt-player-symbol.o {
+    color: #E74C6F;
+}
+
+.ttt-player-name {
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+}
+
+.ttt-vs {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-text-light);
+}
+
+.ttt-status {
+    text-align: center;
+    font-size: 0.88rem;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-md);
+    font-weight: 500;
+}
+
+/* Board */
+.ttt-board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin: var(--space-lg) auto;
+    max-width: 280px;
+    aspect-ratio: 1;
+}
+
+.ttt-cell {
+    aspect-ratio: 1;
+    border-radius: var(--radius-md);
+    background: var(--color-bg);
+    border: 2px solid var(--color-border-light);
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--color-text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    cursor: default;
+    font-family: inherit;
+}
+
+.ttt-cell.clickable {
+    cursor: pointer;
+}
+
+.ttt-cell.clickable:hover {
+    background: rgba(79, 106, 246, 0.06);
+    border-color: var(--color-primary-mid);
+}
+
+.ttt-cell.x {
+    color: var(--color-primary-mid);
+}
+
+.ttt-cell.o {
+    color: #E74C6F;
+}
+
+.ttt-cell.filled {
+    animation: pop 0.2s ease;
+}
+
+.ttt-cell.win {
+    background: rgba(79, 106, 246, 0.12);
+    border-color: var(--color-primary-mid);
+    box-shadow: 0 0 12px rgba(79, 106, 246, 0.2);
+}
+
+@keyframes pop {
+    0% {
+        transform: scale(0.8);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Result */
+.ttt-result {
+    text-align: center;
+    margin-top: var(--space-lg);
+}
+
+.ttt-result-text {
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-md);
+}
+
+.ttt-done-btn {
+    padding: 10px 32px;
+}

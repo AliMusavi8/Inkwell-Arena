@@ -3,15 +3,12 @@ import { useAuth } from './context/AuthContext';
 import Layout from './components/Layout';
 import AuthModal from './components/AuthModal';
 import Feed from './pages/Feed';
-import MyPosts from './pages/MyPosts';
-import Write from './pages/Write';
-import Analytics from './pages/Analytics';
-import PostDetail from './pages/PostDetail';
+import Challenge from './pages/Challenge';
 import Settings from './pages/Settings';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { status } = useAuth();
-  if (status === 'guest') {
+  if (status === 'unauthenticated') {
     return <Navigate to="/" replace />;
   }
   return <>{children}</>;
@@ -20,17 +17,29 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 function App() {
   const { status } = useAuth();
 
+  if (status === 'loading') {
+    return (
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',
+        background: 'var(--color-bg)',
+        color: 'var(--color-text-secondary)',
+        fontSize: '0.9rem',
+      }}>
+        Loading...
+      </div>
+    );
+  }
+
   return (
     <>
-      {status === 'pending' && <AuthModal />}
+      {status === 'unauthenticated' && <AuthModal />}
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Feed />} />
-          <Route path="/post/:id" element={<PostDetail />} />
-          <Route path="/write" element={<ProtectedRoute><Write /></ProtectedRoute>} />
-          <Route path="/write/:id" element={<ProtectedRoute><Write /></ProtectedRoute>} />
-          <Route path="/my-posts" element={<ProtectedRoute><MyPosts /></ProtectedRoute>} />
-          <Route path="/analytics" element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+          <Route path="/challenge" element={<ProtectedRoute><Challenge /></ProtectedRoute>} />
           <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
         </Route>
       </Routes>
