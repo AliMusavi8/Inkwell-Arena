@@ -4,7 +4,10 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 
-load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
+# Load .env from project root (one level up)
+root_env = os.path.join(os.path.dirname(__file__), "..", ".env")
+local_env = os.path.join(os.path.dirname(__file__), ".env")
+load_dotenv(root_env if os.path.exists(root_env) else local_env)
 
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/inkwell")
 

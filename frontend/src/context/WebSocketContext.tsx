@@ -60,7 +60,9 @@ export function WebSocketProvider({ children }: { children: ReactNode }) {
                 wsRef.current.close();
             }
 
-            const ws = new WebSocket(`ws://localhost:8000/ws/${currentToken}`);
+            const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
+            const wsUrl = apiUrl.replace(/^http/, 'ws');
+            const ws = new WebSocket(`${wsUrl}/ws/${currentToken}`);
 
             ws.onopen = () => {
                 setIsConnected(true);
