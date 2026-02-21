@@ -18,7 +18,7 @@
 .active-challenge-banner {
     padding: var(--space-lg);
     border: 2px solid var(--color-primary-mid);
-    background: rgba(79, 106, 246, 0.04);
+    background: rgba(0, 180, 216, 0.04);
 }
 
 .active-challenge-info {
@@ -70,7 +70,27 @@
     gap: var(--space-md);
     padding: var(--space-sm) var(--space-md);
     border-radius: var(--radius-md);
-    background: rgba(79, 106, 246, 0.06);
+    background: rgba(0, 180, 216, 0.04);
+    border: 1px solid rgba(0, 180, 216, 0.08);
+}
+
+.release-btn {
+    margin-left: auto;
+    padding: 5px 14px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--color-accent-gold);
+    border: 1.5px solid rgba(201, 168, 76, 0.3);
+    background: rgba(201, 168, 76, 0.04);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+}
+
+.release-btn:hover {
+    background: rgba(201, 168, 76, 0.1);
+    border-color: var(--color-accent-gold);
 }
 
 .conquest-avatar {
@@ -99,7 +119,7 @@
 
 .conquest-timer {
     font-size: 0.72rem;
-    color: var(--color-accent-orange);
+    color: var(--color-accent-gold);
     display: flex;
     align-items: center;
     gap: 4px;
@@ -108,6 +128,30 @@
 .countdown {
     font-weight: 700;
     font-variant-numeric: tabular-nums;
+}
+
+/* Circular Countdown */
+.circular-countdown {
+    position: relative;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.circular-countdown svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.circular-countdown-text {
+    position: relative;
+    font-size: 0.6rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-primary);
+    z-index: 1;
 }
 
 /* Under Siege (loser perspective) */
@@ -130,7 +174,8 @@
 }
 
 .siege-item {
-    background: rgba(231, 76, 111, 0.06);
+    background: rgba(231, 76, 111, 0.04);
+    border-color: rgba(231, 76, 111, 0.1);
 }
 
 .siege-timer {
@@ -159,12 +204,13 @@
     justify-content: space-between;
     padding: var(--space-md);
     border-radius: var(--radius-md);
-    border: 1px solid var(--color-border-light);
+    border: 1px solid var(--color-border);
     transition: all var(--transition-fast);
 }
 
 .challenge-user-row:hover {
-    border-color: var(--color-primary-mid);
+    border-color: rgba(0, 180, 216, 0.2);
+    background: rgba(0, 180, 216, 0.02);
 }
 
 .challenge-user-left {
@@ -273,7 +319,7 @@
 }
 
 .history-winner {
-    color: var(--color-primary-mid);
+    color: var(--color-accent-gold);
     font-weight: 600;
 }
 
@@ -284,4 +330,201 @@
 .history-status {
     color: var(--color-text-light);
     text-transform: capitalize;
+}
+
+/* ===== Waiting Overlay ===== */
+.waiting-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+.waiting-modal {
+    background: var(--color-bg-elevated);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-2xl) var(--space-xl);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    animation: scaleIn 0.3s ease;
+    box-shadow: var(--shadow-lg);
+}
+
+.waiting-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--color-border);
+    border-top-color: var(--color-primary-mid);
+    border-radius: 50%;
+    margin: 0 auto var(--space-lg);
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.waiting-modal h3 {
+    margin-bottom: var(--space-sm);
+}
+
+.waiting-modal p {
+    color: var(--color-text-secondary);
+    font-size: 0.88rem;
+    margin-bottom: var(--space-lg);
+}
+
+.waiting-cancel-btn {
+    padding: 8px 20px;
+    font-size: 0.82rem;
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border);
+    background: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.waiting-cancel-btn:hover {
+    border-color: var(--color-primary-mid);
+    color: var(--color-primary-mid);
+}
+
+/* ===== Freedom Overlay (loser released) ===== */
+.freedom-overlay {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(0, 180, 216, 0.08) 0%, rgba(0, 0, 0, 0.75) 100%);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1100;
+    animation: freedomFadeIn 0.5s ease;
+    cursor: pointer;
+}
+
+@keyframes freedomFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.freedom-content {
+    text-align: center;
+    max-width: 420px;
+    width: 90%;
+    padding: var(--space-2xl) var(--space-xl);
+    background: linear-gradient(145deg,
+            rgba(12, 22, 38, 0.9) 0%,
+            rgba(10, 14, 24, 0.95) 100%);
+    border: 1px solid rgba(0, 180, 216, 0.15);
+    border-radius: var(--radius-lg);
+    box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.5),
+        0 0 60px rgba(0, 180, 216, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    animation: freedomPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes freedomPop {
+    from {
+        transform: scale(0.6);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.freedom-icon {
+    font-size: 3.5rem;
+    margin-bottom: var(--space-md);
+    animation: freedomFloat 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px rgba(201, 168, 76, 0.3));
+}
+
+@keyframes freedomFloat {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+.freedom-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #FFD700, var(--color-accent-gold), #FFD700);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 4px;
+    letter-spacing: 0.02em;
+}
+
+.freedom-subtitle {
+    font-size: 0.88rem;
+    color: rgba(0, 180, 216, 0.5);
+    margin-bottom: var(--space-lg);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-weight: 600;
+}
+
+.freedom-detail {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-sm);
+    line-height: 1.6;
+}
+
+.freedom-detail strong {
+    color: var(--color-accent-gold);
+}
+
+.freedom-tagline {
+    font-size: 0.82rem;
+    color: var(--color-text-light);
+    font-style: italic;
+    margin-bottom: var(--space-xl);
+}
+
+.freedom-dismiss {
+    padding: 10px 32px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--color-accent-gold), #B8942F);
+    color: var(--color-text-on-accent);
+    border: none;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-gold);
+}
+
+.freedom-dismiss:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(201, 168, 76, 0.35);
 }

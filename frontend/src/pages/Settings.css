@@ -45,6 +45,8 @@
     font-size: 0.8rem;
     font-weight: 600;
     color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
 }
 
 .settings-input {
@@ -53,7 +55,7 @@
     border-radius: var(--radius-md);
     font-size: 0.88rem;
     color: var(--color-text-primary);
-    background: var(--color-bg);
+    background: rgba(10, 22, 40, 0.5);
     font-family: inherit;
     transition: border-color var(--transition-fast);
 }
@@ -61,6 +63,7 @@
 .settings-input:focus {
     outline: none;
     border-color: var(--color-primary-mid);
+    box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.1);
 }
 
 .settings-save-btn {
@@ -80,7 +83,8 @@
     gap: var(--space-md);
     padding: var(--space-sm) var(--space-md);
     border-radius: var(--radius-md);
-    background: rgba(79, 106, 246, 0.04);
+    background: rgba(0, 180, 216, 0.04);
+    border: 1px solid rgba(0, 180, 216, 0.06);
 }
 
 .conquest-avatar-sm {
@@ -105,7 +109,7 @@
 .conquest-timer-sm {
     margin-left: auto;
     font-size: 0.72rem;
-    color: var(--color-accent-orange);
+    color: var(--color-accent-gold);
     display: flex;
     align-items: center;
     gap: 4px;
@@ -114,8 +118,8 @@
 .settings-logout-btn {
     padding: 8px 20px;
     color: #E74C6F;
-    border: 1.5px solid #E74C6F;
-    background: none;
+    border: 1.5px solid rgba(231, 76, 111, 0.3);
+    background: rgba(231, 76, 111, 0.04);
     border-radius: var(--radius-md);
     font-weight: 600;
     cursor: pointer;
@@ -123,5 +127,6 @@
 }
 
 .settings-logout-btn:hover {
-    background: rgba(231, 76, 111, 0.06);
+    background: rgba(231, 76, 111, 0.08);
+    border-color: #E74C6F;
 }

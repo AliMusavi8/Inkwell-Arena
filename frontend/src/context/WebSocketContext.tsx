@@ -81,6 +81,9 @@ export function WebSocketProvider({ children }: { children: ReactNode }) {
                             next.delete(message.user_id);
                             return next;
                         });
+                    } else if (message.type === 'online_users') {
+                        // Initial list of who's already online when we connect
+                        setOnlineUserIds(new Set(message.user_ids));
                     }
                 } catch {
                     // ignore

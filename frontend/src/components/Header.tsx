@@ -3,8 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import {
     HiOutlineSearch,
     HiOutlineBell,
-    HiOutlineMoon,
-    HiOutlineSun,
 } from 'react-icons/hi';
 import { useAuth } from '../context/AuthContext';
 import { useWebSocket } from '../context/WebSocketContext';
@@ -30,15 +28,8 @@ export default function Header() {
     const { user } = useAuth();
     const { lastMessage, sendMessage } = useWebSocket();
 
-    const [darkMode, setDarkMode] = useState(() => {
-        return document.documentElement.getAttribute('data-theme') === 'dark';
-    });
     const [pendingChallenges, setPendingChallenges] = useState<PendingChallenge[]>([]);
     const [showNotifications, setShowNotifications] = useState(false);
-
-    useEffect(() => {
-        document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
-    }, [darkMode]);
 
     // Listen for incoming challenges via WebSocket
     useEffect(() => {
@@ -110,14 +101,6 @@ export default function Header() {
             </div>
 
             <div className="header-right">
-                <button
-                    className={`header-icon-btn ${darkMode ? 'theme-active' : ''}`}
-                    title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-                    onClick={() => setDarkMode(!darkMode)}
-                >
-                    {darkMode ? <HiOutlineSun /> : <HiOutlineMoon />}
-                </button>
-
                 <div className="header-notifications-wrapper">
                     <button
                         className="header-icon-btn"

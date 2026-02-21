@@ -4,10 +4,10 @@
     left: var(--sidebar-width);
     right: 0;
     height: var(--header-height);
-    background: rgba(250, 250, 250, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--color-border-light);
+    background: rgba(8, 12, 20, 0.85);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--color-border);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -36,7 +36,7 @@
 }
 
 .header-breadcrumb-current {
-    color: var(--color-text-primary);
+    color: var(--color-primary-mid);
     font-weight: 600;
 }
 
@@ -48,9 +48,9 @@
 .header-search-input {
     width: 280px;
     padding: 8px 14px 8px 38px;
-    border: 1.5px solid var(--color-border-light);
+    border: 1.5px solid var(--color-border);
     border-radius: var(--radius-full);
-    background: var(--color-bg-card);
+    background: rgba(12, 22, 38, 0.6);
     font-size: 0.82rem;
     color: var(--color-text-primary);
     transition: all var(--transition-fast);
@@ -62,7 +62,7 @@
 
 .header-search-input:focus {
     border-color: var(--color-primary-mid);
-    box-shadow: 0 0 0 3px rgba(79, 106, 246, 0.12);
+    box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.1);
     width: 340px;
 }
 
@@ -95,8 +95,8 @@
 }
 
 .header-icon-btn:hover {
-    background: rgba(79, 106, 246, 0.08);
-    color: var(--color-primary-dark);
+    background: rgba(0, 180, 216, 0.08);
+    color: var(--color-primary-mid);
 }
 
 .header-notification-dot {
@@ -105,7 +105,7 @@
     right: 8px;
     width: 7px;
     height: 7px;
-    background: var(--color-accent-orange);
+    background: var(--color-accent-gold);
     border-radius: var(--radius-full);
     border: 1.5px solid var(--color-bg);
 }
@@ -113,7 +113,7 @@
 .header-divider {
     width: 1px;
     height: 24px;
-    background: var(--color-border-light);
+    background: var(--color-border);
     margin: 0 var(--space-sm);
 }
 
@@ -127,26 +127,26 @@
 }
 
 .header-user-btn:hover {
-    background: rgba(79, 106, 246, 0.08);
+    background: rgba(0, 180, 216, 0.08);
 }
 
 .header-user-avatar {
     width: 30px;
     height: 30px;
     border-radius: var(--radius-full);
-    background: linear-gradient(135deg, var(--color-primary-mid), var(--color-accent-orange));
+    background: linear-gradient(135deg, var(--color-primary-mid), var(--color-accent-gold));
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 0.72rem;
     font-weight: 700;
-    color: white;
+    color: var(--color-text-on-accent);
 }
 
 /* Dark mode toggle active */
 .header-icon-btn.theme-active {
-    background: var(--color-primary-dark);
-    color: white;
+    background: rgba(0, 180, 216, 0.12);
+    color: var(--color-primary-mid);
 }
 
 /* ===== Notifications Dropdown ===== */
@@ -165,8 +165,10 @@
     top: calc(100% + 8px);
     right: 0;
     width: 360px;
-    background: var(--color-bg-card);
-    border: 1px solid var(--color-border-light);
+    background: var(--color-bg-elevated);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lg);
     z-index: 100;
@@ -191,7 +193,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 16px 20px 12px;
-    border-bottom: 1px solid var(--color-border-light);
+    border-bottom: 1px solid var(--color-border);
 }
 
 .notifications-header h3 {
@@ -201,7 +203,7 @@
 
 .notifications-header button {
     font-size: 0.75rem;
-    color: var(--color-accent-orange);
+    color: var(--color-primary-mid);
     font-weight: 500;
     cursor: pointer;
 }
@@ -230,11 +232,11 @@
 }
 
 .notification-item:hover {
-    background: rgba(79, 106, 246, 0.04);
+    background: rgba(0, 180, 216, 0.04);
 }
 
 .notification-item.unread {
-    background: rgba(79, 106, 246, 0.06);
+    background: rgba(0, 180, 216, 0.06);
 }
 
 .notification-icon {
@@ -249,18 +251,18 @@
 }
 
 .notification-icon.green {
-    background: rgba(79, 106, 246, 0.12);
+    background: rgba(0, 180, 216, 0.12);
     color: var(--color-primary-mid);
 }
 
 .notification-icon.orange {
-    background: rgba(79, 106, 246, 0.12);
-    color: var(--color-accent-orange);
+    background: rgba(201, 168, 76, 0.12);
+    color: var(--color-accent-gold);
 }
 
 .notification-icon.dark {
-    background: rgba(58, 90, 64, 0.1);
-    color: var(--color-primary-dark);
+    background: rgba(0, 180, 216, 0.08);
+    color: var(--color-primary-light);
 }
 
 .notification-content {
@@ -288,14 +290,14 @@
     width: 7px;
     height: 7px;
     border-radius: var(--radius-full);
-    background: var(--color-accent-orange);
+    background: var(--color-accent-gold);
     flex-shrink: 0;
     margin-top: 6px;
 }
 
 .notifications-footer {
     padding: 10px 20px;
-    border-top: 1px solid var(--color-border-light);
+    border-top: 1px solid var(--color-border);
     text-align: center;
 }
 
@@ -307,6 +309,45 @@
 }
 
 .notifications-footer button:hover {
-    color: var(--color-primary-dark);
+    color: var(--color-primary-light);
     text-decoration: underline;
+}
+
+/* Challenge notification actions */
+.notif-accept-btn {
+    padding: 5px 14px;
+    border-radius: var(--radius-md);
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--color-accent-gold), #B8942F);
+    color: var(--color-text-on-accent);
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.notif-accept-btn:hover {
+    box-shadow: var(--shadow-gold);
+}
+
+.notif-decline-btn {
+    padding: 5px 14px;
+    border-radius: var(--radius-md);
+    font-size: 0.75rem;
+    font-weight: 600;
+    background: rgba(231, 76, 111, 0.1);
+    color: #E74C6F;
+    border: 1px solid rgba(231, 76, 111, 0.2);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.notif-decline-btn:hover {
+    background: rgba(231, 76, 111, 0.18);
+}
+
+.notification-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
 }

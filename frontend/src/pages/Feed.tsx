@@ -28,7 +28,8 @@ function CountdownTimer({ expiresAt }: { expiresAt: string }) {
     useEffect(() => {
         const update = () => {
             const now = new Date();
-            const expires = new Date(expiresAt);
+            const raw = expiresAt.endsWith('Z') || expiresAt.includes('+') ? expiresAt : expiresAt + 'Z';
+            const expires = new Date(raw);
             const diff = Math.max(0, Math.floor((expires.getTime() - now.getTime()) / 1000));
             const min = Math.floor(diff / 60);
             const sec = diff % 60;

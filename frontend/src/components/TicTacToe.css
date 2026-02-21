@@ -11,13 +11,15 @@
 }
 
 .ttt-modal {
-    background: var(--color-bg-card);
+    background: var(--color-bg-elevated);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
     padding: var(--space-xl) var(--space-2xl);
     max-width: 440px;
     width: 90%;
     position: relative;
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), 0 0 30px rgba(0, 180, 216, 0.05);
     animation: slideUp 0.3s ease;
 }
 
@@ -60,7 +62,7 @@
 
 .ttt-close:hover {
     color: var(--color-text-primary);
-    background: rgba(0, 0, 0, 0.05);
+    background: rgba(0, 180, 216, 0.06);
 }
 
 .ttt-header {
@@ -91,7 +93,7 @@
 }
 
 .ttt-player.active {
-    background: rgba(79, 106, 246, 0.08);
+    background: rgba(0, 180, 216, 0.06);
     box-shadow: 0 0 0 2px var(--color-primary-mid);
 }
 
@@ -105,7 +107,7 @@
 }
 
 .ttt-player-symbol.o {
-    color: #E74C6F;
+    color: var(--color-accent-gold);
 }
 
 .ttt-player-name {
@@ -141,8 +143,8 @@
 .ttt-cell {
     aspect-ratio: 1;
     border-radius: var(--radius-md);
-    background: var(--color-bg);
-    border: 2px solid var(--color-border-light);
+    background: rgba(10, 22, 40, 0.6);
+    border: 2px solid var(--color-border);
     font-size: 2rem;
     font-weight: 800;
     color: var(--color-text-primary);
@@ -159,7 +161,7 @@
 }
 
 .ttt-cell.clickable:hover {
-    background: rgba(79, 106, 246, 0.06);
+    background: rgba(0, 180, 216, 0.06);
     border-color: var(--color-primary-mid);
 }
 
@@ -168,7 +170,7 @@
 }
 
 .ttt-cell.o {
-    color: #E74C6F;
+    color: var(--color-accent-gold);
 }
 
 .ttt-cell.filled {
@@ -176,9 +178,9 @@
 }
 
 .ttt-cell.win {
-    background: rgba(79, 106, 246, 0.12);
+    background: rgba(0, 180, 216, 0.08);
     border-color: var(--color-primary-mid);
-    box-shadow: 0 0 12px rgba(79, 106, 246, 0.2);
+    box-shadow: 0 0 12px rgba(0, 180, 216, 0.2);
 }
 
 @keyframes pop {

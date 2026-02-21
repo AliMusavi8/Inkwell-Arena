@@ -11,6 +11,7 @@ import {
     apiGetActiveChallenge,
     apiForfeitChallenge,
     apiGetUnderSiege,
+    apiReleaseSiege,
     type UserData,
     type ChallengeData,
     type ConqueredAccountData,
@@ -20,7 +21,7 @@ import './Challenge.css';
 
 export default function Challenge() {
     const { user, refreshConquests, conqueredAccounts } = useAuth();
-    const { lastMessage, sendMessage } = useWebSocket();
+    const { lastMessage, sendMessage, onlineUserIds } = useWebSocket();
     const location = useLocation();
     const [users, setUsers] = useState<UserData[]>([]);
     const [history, setHistory] = useState<ChallengeData[]>([]);
@@ -41,6 +42,7 @@ export default function Challenge() {
     // Existing active challenge from DB (for resume/forfeit)
     const [staleChallenge, setStaleChallenge] = useState<ChallengeData | null>(null);
     const [underSiege, setUnderSiege] = useState<ConqueredAccountData[]>([]);
+    const [freedomMessage, setFreedomMessage] = useState<string | null>(null);
 
     useEffect(() => {
         loadData();
@@ -66,13 +68,20 @@ export default function Challenge() {
     useEffect(() => {
         if (!lastMessage) return;
         if (lastMessage.type === 'challenge_accepted') {
-            setWaitingFor(null); // Close waiting overlay
+            setWaitingFor(null);
             setActiveGame({
                 challengeId: lastMessage.challenge_id,
                 opponentId: lastMessage.defender_id,
                 opponentUsername: lastMessage.defender_username,
                 isChallenger: true,
             });
+        } else if (lastMessage.type === 'siege_released') {
+            // Loser gets notified — show dramatic freedom message
+            setFreedomMessage(lastMessage.winner_username || 'Your conqueror');
+            loadData();
+            refreshConquests();
+            // Auto-dismiss after 5 seconds
+            setTimeout(() => setFreedomMessage(null), 5000);
         }
     }, [lastMessage]);
 
@@ -152,6 +161,22 @@ export default function Challenge() {
         await loadData();
     };
 
+    const handleRelease = async (acc: ConqueredAccountData) => {
+        try {
+            await apiReleaseSiege(acc.challenge_id);
+            // Notify the loser via WebSocket
+            sendMessage({
+                type: 'siege_released',
+                loser_id: acc.user_id,
+                winner_username: user?.username,
+            });
+            await refreshConquests();
+            await loadData();
+        } catch (err: any) {
+            alert(err.message || 'Failed to release siege');
+        }
+    };
+
     if (loading) {
         return <div className="challenge-page animate-fade-in"><p>Loading...</p></div>;
     }
@@ -192,6 +217,24 @@ export default function Challenge() {
                 </div>
             )}
 
+            {/* Freedom Overlay — shown to loser when winner releases siege */}
+            {freedomMessage && (
+                <div className="freedom-overlay" onClick={() => setFreedomMessage(null)}>
+                    <div className="freedom-content">
+                        <div className="freedom-icon">🕊️</div>
+                        <h2 className="freedom-title">You Have Been Freed!</h2>
+                        <p className="freedom-subtitle">The siege has been lifted</p>
+                        <p className="freedom-detail">
+                            <strong>@{freedomMessage}</strong> has shown mercy and released control of your account.
+                        </p>
+                        <p className="freedom-tagline">Your kingdom stands once more.</p>
+                        <button className="btn btn-primary freedom-dismiss" onClick={() => setFreedomMessage(null)}>
+                            Reclaim My Throne
+                        </button>
+                    </div>
+                </div>
+            )}
+
             {/* Waiting Overlay */}
             {waitingFor && (
                 <div className="waiting-overlay">
@@ -220,15 +263,20 @@ export default function Challenge() {
                     <div className="conquest-list">
                         {conqueredAccounts.map((acc: ConqueredAccountData) => (
                             <div key={acc.user_id} className="conquest-item">
-                                <div className="conquest-avatar" style={{ background: acc.avatar_color }}>
-                                    {(acc.display_name || acc.username).slice(0, 2).toUpperCase()}
-                                </div>
+                                <CircularCountdown expiresAt={acc.expires_at} totalMinutes={10} />
                                 <div className="conquest-info">
                                     <span className="conquest-name">@{acc.username}</span>
                                     <span className="conquest-timer">
                                         <HiOutlineClock /> Expires: <CountdownTimer expiresAt={acc.expires_at} />
                                     </span>
                                 </div>
+                                <button
+                                    className="btn release-btn"
+                                    onClick={() => handleRelease(acc)}
+                                    title="End siege early"
+                                >
+                                    🏳️ Release
+                                </button>
                             </div>
                         ))}
                     </div>
@@ -243,9 +291,7 @@ export default function Challenge() {
                     <div className="conquest-list">
                         {underSiege.map((acc: ConqueredAccountData) => (
                             <div key={acc.user_id} className="conquest-item siege-item">
-                                <div className="conquest-avatar" style={{ background: acc.avatar_color }}>
-                                    {(acc.display_name || acc.username).slice(0, 2).toUpperCase()}
-                                </div>
+                                <CircularCountdown expiresAt={acc.expires_at} totalMinutes={10} color="#E74C6F" />
                                 <div className="conquest-info">
                                     <span className="conquest-name">@{acc.username}</span>
                                     <span className="conquest-timer siege-timer">
@@ -265,29 +311,32 @@ export default function Challenge() {
                     {users.length === 0 ? (
                         <p className="challenge-empty">No other users yet. Invite your friends!</p>
                     ) : (
-                        users.map((u) => (
-                            <div className="challenge-user-row" key={u.id}>
-                                <div className="challenge-user-left">
-                                    <div className="challenge-user-avatar" style={{ background: u.avatar_color }}>
-                                        {(u.display_name || u.username).split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)}
+                        users.map((u) => {
+                            const isOnline = onlineUserIds.has(u.id);
+                            return (
+                                <div className="challenge-user-row" key={u.id}>
+                                    <div className="challenge-user-left">
+                                        <div className="challenge-user-avatar" style={{ background: u.avatar_color }}>
+                                            {(u.display_name || u.username).split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)}
+                                        </div>
+                                        <div className="challenge-user-info">
+                                            <span className="challenge-user-name">{u.display_name || u.username}</span>
+                                            <span className="challenge-user-handle">@{u.username}</span>
+                                        </div>
+                                        <span className={`challenge-user-status ${isOnline ? 'online' : 'offline'}`}>
+                                            {isOnline ? '🟢 Online' : '⚫ Offline'}
+                                        </span>
                                     </div>
-                                    <div className="challenge-user-info">
-                                        <span className="challenge-user-name">{u.display_name || u.username}</span>
-                                        <span className="challenge-user-handle">@{u.username}</span>
-                                    </div>
-                                    <span className={`challenge-user-status ${u.is_online ? 'online' : 'offline'}`}>
-                                        {u.is_online ? '🟢 Online' : '⚫ Offline'}
-                                    </span>
+                                    <button
+                                        className="btn btn-primary challenge-btn"
+                                        onClick={() => handleChallenge(u)}
+                                        disabled={!isOnline || !!waitingFor}
+                                    >
+                                        <GiSwordClash /> Challenge
+                                    </button>
                                 </div>
-                                <button
-                                    className="btn btn-primary challenge-btn"
-                                    onClick={() => handleChallenge(u)}
-                                    disabled={!u.is_online || !!waitingFor}
-                                >
-                                    <GiSwordClash /> Challenge
-                                </button>
-                            </div>
-                        ))
+                            );
+                        })
                     )}
                 </div>
             </div>
@@ -332,7 +381,9 @@ function CountdownTimer({ expiresAt }: { expiresAt: string }) {
     useEffect(() => {
         const update = () => {
             const now = new Date();
-            const expires = new Date(expiresAt);
+            // Ensure UTC parsing — append Z if not already there
+            const raw = expiresAt.endsWith('Z') || expiresAt.includes('+') ? expiresAt : expiresAt + 'Z';
+            const expires = new Date(raw);
             const diff = Math.max(0, Math.floor((expires.getTime() - now.getTime()) / 1000));
             const min = Math.floor(diff / 60);
             const sec = diff % 60;
@@ -344,4 +395,66 @@ function CountdownTimer({ expiresAt }: { expiresAt: string }) {
     }, [expiresAt]);
 
     return <span className="countdown">{timeLeft}</span>;
+}
+
+function CircularCountdown({ expiresAt, totalMinutes = 10, color = '#4F6AF6' }: {
+    expiresAt: string;
+    totalMinutes?: number;
+    color?: string;
+}) {
+    const [progress, setProgress] = useState(1);
+    const [timeLeft, setTimeLeft] = useState('');
+
+    useEffect(() => {
+        const totalSeconds = totalMinutes * 60;
+        const update = () => {
+            const now = new Date();
+            const raw = expiresAt.endsWith('Z') || expiresAt.includes('+') ? expiresAt : expiresAt + 'Z';
+            const expires = new Date(raw);
+            const diff = Math.max(0, Math.floor((expires.getTime() - now.getTime()) / 1000));
+            setProgress(diff / totalSeconds);
+            const min = Math.floor(diff / 60);
+            const sec = diff % 60;
+            setTimeLeft(`${min}:${sec.toString().padStart(2, '0')}`);
+        };
+        update();
+        const interval = setInterval(update, 1000);
+        return () => clearInterval(interval);
+    }, [expiresAt, totalMinutes]);
+
+    const size = 48;
+    const stroke = 3.5;
+    const radius = (size - stroke) / 2;
+    const circumference = 2 * Math.PI * radius;
+    const dashOffset = circumference * (1 - progress);
+
+    return (
+        <div className="circular-countdown" style={{ width: size, height: size }}>
+            <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+                <circle
+                    cx={size / 2}
+                    cy={size / 2}
+                    r={radius}
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={stroke}
+                    opacity={0.12}
+                />
+                <circle
+                    cx={size / 2}
+                    cy={size / 2}
+                    r={radius}
+                    fill="none"
+                    stroke={color}
+                    strokeWidth={stroke}
+                    strokeLinecap="round"
+                    strokeDasharray={circumference}
+                    strokeDashoffset={dashOffset}
+                    transform={`rotate(-90 ${size / 2} ${size / 2})`}
+                    style={{ transition: 'stroke-dashoffset 1s linear' }}
+                />
+            </svg>
+            <span className="circular-countdown-text">{timeLeft}</span>
+        </div>
+    );
 }

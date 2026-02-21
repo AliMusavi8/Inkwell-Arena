@@ -15,6 +15,12 @@ from routers import auth_routes, users, posts, challenges
 # Create all tables
 Base.metadata.create_all(bind=engine)
 
+# Reset all users to offline on startup (handles unclean shutdowns)
+_db = next(get_db())
+_db.query(User).update({User.is_online: False})
+_db.commit()
+_db.close()
+
 app = FastAPI(title="Inkwell API", version="1.0.0")
 
 # CORS
@@ -69,6 +75,14 @@ async def websocket_endpoint(websocket: WebSocket, token: str):
         exclude=user_id,
     )
 
+    # Send the newly connected user a list of who's already online
+    online_ids = [uid for uid in manager.active_connections if uid != user_id]
+    if online_ids:
+        await manager.send_to_user(user_id, {
+            "type": "online_users",
+            "user_ids": online_ids,
+        })
+
     try:
         while True:
             data = await websocket.receive_text()
@@ -118,6 +132,13 @@ async def websocket_endpoint(websocket: WebSocket, token: str):
                     "type": "game_over",
                     "winner_id": message.get("winner_id"),
                     "challenge_id": message.get("challenge_id"),
+                })
+
+            elif msg_type == "siege_released":
+                loser_id = message.get("loser_id")
+                await manager.send_to_user(loser_id, {
+                    "type": "siege_released",
+                    "winner_username": message.get("winner_username"),
                 })
 
     except WebSocketDisconnect:

@@ -205,6 +205,32 @@ def get_under_siege(
     return result
 
 
+@router.put("/{challenge_id}/release", response_model=ChallengeOut)
+def release_siege(
+    challenge_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Winner releases siege early — ends access to loser's account."""
+    challenge = db.query(Challenge).filter(Challenge.id == challenge_id).first()
+    if not challenge:
+        raise HTTPException(status_code=404, detail="Challenge not found")
+    if challenge.winner_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Only the winner can release a siege")
+    if challenge.status != "completed" or not challenge.access_expires_at:
+        raise HTTPException(status_code=400, detail="No active siege to release")
+
+    now = datetime.utcnow()
+    if challenge.access_expires_at <= now:
+        raise HTTPException(status_code=400, detail="Siege has already expired")
+
+    # End the siege by setting expiry to now
+    challenge.access_expires_at = now
+    db.commit()
+    db.refresh(challenge)
+    return challenge_to_out(challenge)
+
+
 @router.get("/history", response_model=List[ChallengeOut])
 def get_challenge_history(
     db: Session = Depends(get_db),

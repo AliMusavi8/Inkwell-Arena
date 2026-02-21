@@ -18,8 +18,8 @@
 .conquest-banner {
     padding: var(--space-md) var(--space-lg);
     border-radius: var(--radius-lg);
-    background: linear-gradient(135deg, rgba(79, 106, 246, 0.06), rgba(231, 76, 111, 0.06));
-    border: 1.5px solid rgba(79, 106, 246, 0.2);
+    background: linear-gradient(135deg, rgba(0, 180, 216, 0.04), rgba(201, 168, 76, 0.04));
+    border: 1.5px solid rgba(201, 168, 76, 0.2);
 }
 
 .conquest-banner-header {
@@ -28,7 +28,7 @@
     gap: 8px;
     font-size: 0.82rem;
     font-weight: 600;
-    color: var(--color-primary-mid);
+    color: var(--color-accent-gold);
     margin-bottom: var(--space-sm);
 }
 
@@ -57,13 +57,13 @@
 
 .conquest-chip:hover {
     border-color: var(--color-primary-mid);
-    box-shadow: 0 0 0 3px rgba(79, 106, 246, 0.08);
+    box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.08);
 }
 
 .conquest-chip.active {
-    border-color: #E74C6F;
-    background: rgba(231, 76, 111, 0.06);
-    box-shadow: 0 0 0 3px rgba(231, 76, 111, 0.1);
+    border-color: var(--color-accent-gold);
+    background: rgba(201, 168, 76, 0.06);
+    box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.1);
 }
 
 .conquest-chip-avatar {
@@ -89,7 +89,7 @@
     align-items: center;
     gap: 3px;
     font-size: 0.7rem;
-    color: var(--color-accent-orange);
+    color: var(--color-accent-gold);
     font-variant-numeric: tabular-nums;
 }
 
@@ -104,8 +104,8 @@
 }
 
 .compose-box.compose-as-other {
-    border: 2px solid #E74C6F;
-    box-shadow: 0 0 20px rgba(231, 76, 111, 0.08);
+    border: 2px solid var(--color-accent-gold);
+    box-shadow: 0 0 20px rgba(201, 168, 76, 0.08);
 }
 
 .compose-as-banner {
@@ -115,10 +115,10 @@
     padding: 8px 14px;
     margin-bottom: var(--space-md);
     border-radius: var(--radius-md);
-    background: linear-gradient(135deg, rgba(231, 76, 111, 0.08), rgba(231, 76, 111, 0.03));
+    background: linear-gradient(135deg, rgba(201, 168, 76, 0.08), rgba(201, 168, 76, 0.03));
     font-size: 0.82rem;
     font-weight: 600;
-    color: #E74C6F;
+    color: var(--color-accent-gold);
 }
 
 .compose-as-banner svg {
@@ -130,7 +130,7 @@
     align-items: center;
     gap: 3px;
     font-size: 0.72rem;
-    color: var(--color-accent-orange);
+    color: var(--color-accent-gold);
     margin-left: auto;
 }
 
@@ -209,8 +209,8 @@
 }
 
 .compose-btn-conquest {
-    background: #E74C6F;
-    color: white;
+    background: linear-gradient(135deg, var(--color-accent-gold), #B8942F);
+    color: var(--color-text-on-accent);
     border: none;
     border-radius: var(--radius-md);
     font-weight: 600;
@@ -219,7 +219,7 @@
 }
 
 .compose-btn-conquest:hover {
-    background: #d4405e;
+    box-shadow: var(--shadow-gold);
 }
 
 .compose-btn-conquest:disabled {
@@ -249,11 +249,11 @@
 }
 
 .tweet-card:hover {
-    background: rgba(79, 106, 246, 0.02);
+    background: rgba(0, 180, 216, 0.02);
 }
 
 .tweet-card.tweet-conquered {
-    border-left: 3px solid #E74C6F;
+    border-left: 3px solid var(--color-accent-gold);
 }
 
 .tweet-avatar {
@@ -307,7 +307,7 @@
     align-items: center;
     gap: 5px;
     font-size: 0.72rem;
-    color: #E74C6F;
+    color: var(--color-accent-gold);
     margin-top: 2px;
     font-weight: 500;
 }
@@ -347,16 +347,16 @@
 }
 
 .tweet-action-btn:hover {
-    background: rgba(79, 106, 246, 0.08);
+    background: rgba(0, 180, 216, 0.08);
     color: var(--color-primary-mid);
 }
 
 .tweet-action-btn.liked {
-    color: #E74C6F;
+    color: var(--color-accent-gold);
 }
 
 .tweet-action-btn.liked:hover {
-    background: rgba(231, 76, 111, 0.08);
+    background: rgba(201, 168, 76, 0.08);
 }
 
 .tweet-action-btn svg {
@@ -374,7 +374,7 @@
     margin-bottom: 8px;
 }
 
-/* Notification empty & actions */
+/* Notification empty */
 .notification-empty {
     padding: 24px;
     text-align: center;
@@ -382,51 +382,12 @@
     font-size: 0.84rem;
 }
 
-.notification-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
-}
-
-.notif-accept-btn {
-    padding: 5px 14px;
-    border-radius: var(--radius-md);
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: white;
-    background: var(--color-primary-mid);
-    border: none;
-    cursor: pointer;
-    transition: all var(--transition-fast);
-}
-
-.notif-accept-btn:hover {
-    background: #3B54D4;
-}
-
-.notif-decline-btn {
-    padding: 5px 14px;
-    border-radius: var(--radius-md);
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: var(--color-text-secondary);
-    background: none;
-    border: 1px solid var(--color-border);
-    cursor: pointer;
-    transition: all var(--transition-fast);
-}
-
-.notif-decline-btn:hover {
-    border-color: #E74C6F;
-    color: #E74C6F;
-}
-
 /* Sidebar logout */
 .sidebar-logout-btn {
     margin-left: auto;
     padding: 6px;
     border-radius: var(--radius-md);
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--color-text-light);
     font-size: 1.1rem;
     display: flex;
     align-items: center;
@@ -438,8 +399,8 @@
 }
 
 .sidebar-logout-btn:hover {
-    color: white;
-    background: rgba(255, 255, 255, 0.06);
+    color: var(--color-primary-mid);
+    background: rgba(0, 180, 216, 0.06);
 }
 
 /* Countdown */

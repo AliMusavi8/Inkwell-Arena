@@ -213,3 +213,11 @@ export async function apiForfeitChallenge(
         method: "PUT",
     });
 }
+
+export async function apiReleaseSiege(
+    challengeId: number
+): Promise<ChallengeData> {
+    return request<ChallengeData>(`/challenges/${challengeId}/release`, {
+        method: "PUT",
+    });
+}
