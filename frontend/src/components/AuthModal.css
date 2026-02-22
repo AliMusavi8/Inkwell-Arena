@@ -106,6 +106,34 @@
     position: relative;
 }
 
+/* Close button */
+.auth-close-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--color-text-secondary);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.auth-close-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--color-text-primary);
+}
+
+.auth-close-btn svg {
+    font-size: 1.2rem;
+}
+
 /* Body — tabs + form */
 .auth-modal-body {
     padding: 28px 32px 32px;
@@ -231,12 +259,20 @@
     letter-spacing: 0.05em;
 }
 
+/* Guest button wrapper */
+.auth-guest-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
 /* Guest button */
 .auth-guest-btn {
-    padding: 11px;
+    width: 100%;
+    padding: 12px;
     border-radius: var(--radius-md);
-    font-size: 0.84rem;
-    font-weight: 500;
+    font-size: 0.88rem;
+    font-weight: 600;
     color: var(--color-text-secondary);
     background: none;
     border: 1.5px solid var(--color-border);
@@ -255,5 +291,5 @@
 }
 
 .auth-guest-btn svg {
-    font-size: 1rem;
+    font-size: 1.1rem;
 }

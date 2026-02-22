@@ -1,10 +1,16 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { HiOutlineEye, HiOutlineX } from 'react-icons/hi';
 
 import inkwellLogo from '../assets/inkwell-logo.png';
 import './AuthModal.css';
 
-export default function AuthModal() {
+interface AuthModalProps {
+    onGuestMode?: () => void;
+    onClose?: () => void;
+}
+
+export default function AuthModal({ onGuestMode, onClose }: AuthModalProps) {
     const { login, register } = useAuth();
     const [tab, setTab] = useState<'login' | 'signup'>('signup');
     const [username, setUsername] = useState('');
@@ -36,6 +42,11 @@ export default function AuthModal() {
         <div className="auth-overlay">
             <div className="auth-modal">
                 <div className="auth-modal-header">
+                    {onClose && (
+                        <button className="auth-close-btn" onClick={onClose} aria-label="Close">
+                            <HiOutlineX />
+                        </button>
+                    )}
                     <div className="auth-brand-icon">
                         <img src={inkwellLogo} alt="Inkwell" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '14px' }} />
                     </div>
@@ -115,6 +126,17 @@ export default function AuthModal() {
                             {loading ? 'Please wait...' : tab === 'signup' ? 'Create Account' : 'Log In'}
                         </button>
                     </form>
+
+                    {onGuestMode && (
+                        <div className="auth-guest-wrapper">
+                            <div className="auth-divider">
+                                <span>or</span>
+                            </div>
+                            <button className="auth-guest-btn" onClick={onGuestMode}>
+                                <HiOutlineEye /> Take a tour
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

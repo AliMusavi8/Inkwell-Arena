@@ -11,7 +11,10 @@ from dotenv import load_dotenv
 from database import get_db
 from models import User
 
-load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
+# Load .env from project root (one level up) or local
+root_env = os.path.join(os.path.dirname(__file__), "..", ".env")
+local_env = os.path.join(os.path.dirname(__file__), ".env")
+load_dotenv(root_env if os.path.exists(root_env) else local_env)
 
 JWT_SECRET = os.getenv("JWT_SECRET", "inkwell-secret-key")
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")

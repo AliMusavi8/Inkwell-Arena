@@ -43,7 +43,7 @@ function CountdownTimer({ expiresAt }: { expiresAt: string }) {
     return <span className="countdown">{timeLeft}</span>;
 }
 
-export default function Feed() {
+export default function Feed({ isGuest }: { isGuest?: boolean }) {
     const { user, conqueredAccounts } = useAuth();
     const [posts, setPosts] = useState<PostData[]>([]);
     const [newPost, setNewPost] = useState('');
@@ -104,7 +104,7 @@ export default function Feed() {
             </div>
 
             {/* Conquered Accounts Banner */}
-            {conqueredAccounts.length > 0 && (
+            {!isGuest && conqueredAccounts.length > 0 && (
                 <div className="conquest-banner">
                     <div className="conquest-banner-header">
                         <GiSwordClash className="conquest-banner-icon" />
@@ -132,53 +132,55 @@ export default function Feed() {
             )}
 
             {/* Compose Box */}
-            <div className={`card compose-box ${selectedConquest ? 'compose-as-other' : ''}`}>
-                {/* "Posting as" indicator */}
-                {selectedConquest && (
-                    <div className="compose-as-banner">
-                        <GiSwordClash />
-                        <span>Posting as <strong>@{selectedConquest.username}</strong></span>
-                        <span className="compose-as-timer">
-                            <HiOutlineClock /> <CountdownTimer expiresAt={selectedConquest.expires_at} />
-                        </span>
-                        <button className="compose-as-cancel" onClick={() => setPostAsUserId(null)}>
-                            ✕ Cancel
+            {!isGuest && (
+                <div className={`card compose-box ${selectedConquest ? 'compose-as-other' : ''}`}>
+                    {/* "Posting as" indicator */}
+                    {selectedConquest && (
+                        <div className="compose-as-banner">
+                            <GiSwordClash />
+                            <span>Posting as <strong>@{selectedConquest.username}</strong></span>
+                            <span className="compose-as-timer">
+                                <HiOutlineClock /> <CountdownTimer expiresAt={selectedConquest.expires_at} />
+                            </span>
+                            <button className="compose-as-cancel" onClick={() => setPostAsUserId(null)}>
+                                ✕ Cancel
+                            </button>
+                        </div>
+                    )}
+                    <div className="compose-row">
+                        <div
+                            className="compose-avatar"
+                            style={{ background: selectedConquest?.avatar_color || user?.avatar_color || '#4F6AF6' }}
+                        >
+                            {selectedConquest
+                                ? (selectedConquest.display_name || selectedConquest.username).slice(0, 2).toUpperCase()
+                                : userInitials}
+                        </div>
+                        <textarea
+                            className="compose-input"
+                            placeholder={
+                                selectedConquest
+                                    ? `Write something as @${selectedConquest.username}...`
+                                    : "What's on your mind?"
+                            }
+                            value={newPost}
+                            onChange={e => setNewPost(e.target.value)}
+                            maxLength={280}
+                            rows={3}
+                        />
+                    </div>
+                    <div className="compose-footer">
+                        <span className="compose-char-count">{newPost.length}/280</span>
+                        <button
+                            className={`btn compose-btn ${selectedConquest ? 'compose-btn-conquest' : 'btn-primary'}`}
+                            onClick={handlePost}
+                            disabled={!newPost.trim() || posting}
+                        >
+                            {posting ? 'Posting...' : selectedConquest ? `⚔️ Post as @${selectedConquest.username}` : 'Post'}
                         </button>
                     </div>
-                )}
-                <div className="compose-row">
-                    <div
-                        className="compose-avatar"
-                        style={{ background: selectedConquest?.avatar_color || user?.avatar_color || '#4F6AF6' }}
-                    >
-                        {selectedConquest
-                            ? (selectedConquest.display_name || selectedConquest.username).slice(0, 2).toUpperCase()
-                            : userInitials}
-                    </div>
-                    <textarea
-                        className="compose-input"
-                        placeholder={
-                            selectedConquest
-                                ? `Write something as @${selectedConquest.username}...`
-                                : "What's on your mind?"
-                        }
-                        value={newPost}
-                        onChange={e => setNewPost(e.target.value)}
-                        maxLength={280}
-                        rows={3}
-                    />
                 </div>
-                <div className="compose-footer">
-                    <span className="compose-char-count">{newPost.length}/280</span>
-                    <button
-                        className={`btn compose-btn ${selectedConquest ? 'compose-btn-conquest' : 'btn-primary'}`}
-                        onClick={handlePost}
-                        disabled={!newPost.trim() || posting}
-                    >
-                        {posting ? 'Posting...' : selectedConquest ? `⚔️ Post as @${selectedConquest.username}` : 'Post'}
-                    </button>
-                </div>
-            </div>
+            )}
 
             {/* Timeline */}
             <div className="feed-timeline">

@@ -1,0 +1,694 @@
+/* ===== Splash Screen — Underwater Gate ===== */
+
+.splash-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    overflow: hidden;
+    background: #020810;
+}
+
+/* ===== Ocean Background ===== */
+.splash-ocean {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg,
+            #020810 0%,
+            #051520 25%,
+            #0a1e30 50%,
+            #071820 75%,
+            #030a12 100%);
+}
+
+/* Light rays from above */
+.splash-rays {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    opacity: 0.6;
+}
+
+.ray {
+    position: absolute;
+    top: -20%;
+    width: 2px;
+    height: 140%;
+    background: linear-gradient(180deg,
+            rgba(0, 180, 216, 0.15) 0%,
+            rgba(72, 202, 228, 0.05) 40%,
+            transparent 80%);
+    transform-origin: top center;
+    animation: raySwing 8s ease-in-out infinite;
+}
+
+.ray-1 {
+    left: 15%;
+    animation-delay: 0s;
+    transform: rotate(-5deg);
+    width: 3px;
+}
+
+.ray-2 {
+    left: 30%;
+    animation-delay: 1.5s;
+    transform: rotate(3deg);
+}
+
+.ray-3 {
+    left: 50%;
+    animation-delay: 0.8s;
+    transform: rotate(-2deg);
+    width: 4px;
+}
+
+.ray-4 {
+    left: 70%;
+    animation-delay: 2s;
+    transform: rotate(4deg);
+}
+
+.ray-5 {
+    left: 85%;
+    animation-delay: 0.5s;
+    transform: rotate(-3deg);
+    width: 3px;
+}
+
+@keyframes raySwing {
+
+    0%,
+    100% {
+        transform: rotate(-5deg);
+        opacity: 0.4;
+    }
+
+    50% {
+        transform: rotate(5deg);
+        opacity: 0.8;
+    }
+}
+
+/* Bubbles */
+.splash-bubbles,
+.splash-particles {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.bubble {
+    position: absolute;
+    bottom: -20px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%,
+            rgba(0, 180, 216, 0.3),
+            rgba(0, 180, 216, 0.05));
+    border: 1px solid rgba(0, 180, 216, 0.15);
+    animation: bubbleRise linear infinite;
+}
+
+@keyframes bubbleRise {
+    0% {
+        transform: translateY(0) translateX(0) scale(1);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0.7;
+    }
+
+    90% {
+        opacity: 0.3;
+    }
+
+    100% {
+        transform: translateY(-110vh) translateX(30px) scale(0.5);
+        opacity: 0;
+    }
+}
+
+.particle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: rgba(0, 180, 216, 0.25);
+    animation: particleDrift ease-in-out infinite;
+}
+
+@keyframes particleDrift {
+
+    0%,
+    100% {
+        transform: translate(0, 0);
+        opacity: 0.2;
+    }
+
+    25% {
+        transform: translate(15px, -10px);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: translate(-10px, -20px);
+        opacity: 0.3;
+    }
+
+    75% {
+        transform: translate(20px, -5px);
+        opacity: 0.6;
+    }
+}
+
+/* ===== Gate Container ===== */
+.splash-gate-container {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    z-index: 2;
+}
+
+.gate-half {
+    width: 50%;
+    height: 100%;
+    position: relative;
+    transition: transform 1.6s cubic-bezier(0.65, 0, 0.35, 1);
+    overflow: hidden;
+    /* Important so CSS shapes clip exactly at the edge */
+}
+
+.gate-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Animations for gate movement */
+.splash-arriving .gate-left {
+    transform: translateX(-100%);
+    animation: gateSlideInLeft 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.splash-arriving .gate-right {
+    transform: translateX(100%);
+    animation: gateSlideInRight 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes gateSlideInLeft {
+    from {
+        transform: translateX(-100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes gateSlideInRight {
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+.splash-gate-closed .gate-left,
+.splash-gate-closed .gate-right,
+.splash-auth .gate-left,
+.splash-auth .gate-right {
+    transform: translateX(0);
+}
+
+.splash-opening .gate-left {
+    transform: translateX(-105%);
+}
+
+.splash-opening .gate-right {
+    transform: translateX(105%);
+}
+
+/* ===== Correctly Proportioned CSS Shapes ===== */
+
+/* Full Concentric Circles (Parietal Cave Art Style) */
+.gate-circle-full {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50vmin;
+    height: 50vmin;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 2;
+}
+
+.circle-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    /* Parietal style: rusty, ochre, cave pigments */
+    border: 3px solid rgba(200, 80, 40, 0.4);
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.5);
+    /* deep etched look */
+    filter: drop-shadow(0 0 4px rgba(200, 80, 40, 0.3));
+    animation: parietalPulse 5s ease-in-out infinite alternate;
+}
+
+/* Irregular, thicker borders for a hand-painted cave feel */
+.circle-outer {
+    width: 100%;
+    height: 100%;
+    border-width: 4px;
+    border-color: rgba(220, 110, 50, 0.5);
+    animation-delay: 0s;
+}
+
+.circle-mid {
+    width: 66%;
+    height: 66%;
+    border-width: 5px;
+    border-color: rgba(180, 70, 30, 0.6);
+    animation-delay: 1.5s;
+    border-style: dashed;
+}
+
+.circle-inner {
+    width: 33%;
+    height: 33%;
+    border-width: 3px;
+    border-color: rgba(240, 130, 60, 0.5);
+    animation-delay: 3s;
+}
+
+@keyframes parietalPulse {
+
+    0%,
+    20% {
+        border-color: rgba(220, 100, 50, 0.2);
+        filter: drop-shadow(0 0 2px rgba(220, 100, 50, 0.1));
+    }
+
+    80%,
+    100% {
+        border-color: rgba(220, 120, 60, 0.7);
+        filter: drop-shadow(0 0 15px rgba(220, 120, 60, 0.6)) brightness(1.2);
+    }
+}
+
+/* CSS Runes (Diamonds) */
+.gate-runes-left,
+.gate-runes-right {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.rune-diamond {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border: 1.5px solid rgba(0, 180, 216, 0.15);
+    transform: rotate(45deg);
+    animation: runePulse 3s ease-in-out infinite alternate;
+    box-shadow: inset 0 0 5px rgba(0, 180, 216, 0.1);
+}
+
+.gate-runes-right .rune-diamond {
+    animation-delay: 1s;
+}
+
+/* CSS Rivets */
+.gate-rivets-left,
+.gate-rivets-right {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.rivet {
+    position: absolute;
+    width: 1.5vmin;
+    /* Scale with screen */
+    height: 1.5vmin;
+    min-width: 8px;
+    min-height: 8px;
+    max-width: 16px;
+    max-height: 16px;
+    background: radial-gradient(circle at center, rgba(180, 70, 30, 0.4), rgba(120, 30, 10, 0.8));
+    border-radius: 50%;
+    border: 2px dashed rgba(220, 100, 50, 0.5);
+    box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.8), inset -1px -1px 2px rgba(255, 255, 255, 0.05);
+    /* 3D effect built into the rock */
+    filter: drop-shadow(0 0 2px rgba(220, 100, 50, 0.2));
+    animation: parietalPulse 5s ease-in-out infinite alternate;
+}
+
+.gate-rivets-left .rivet {
+    animation-delay: 2s;
+}
+
+.gate-rivets-right .rivet {
+    animation-delay: 0.5s;
+}
+
+
+/* Pulsing Magic Glows */
+@keyframes ancientPulse {
+
+    0%,
+    20% {
+        border-color: rgba(201, 168, 76, 0.1);
+        box-shadow: 0 0 0 rgba(201, 168, 76, 0);
+    }
+
+    80%,
+    100% {
+        border-color: rgba(201, 168, 76, 0.6);
+        box-shadow: 0 0 15px rgba(201, 168, 76, 0.4), inset 0 0 10px rgba(201, 168, 76, 0.2);
+    }
+}
+
+@keyframes runePulse {
+
+    0%,
+    20% {
+        border-color: rgba(0, 180, 216, 0.15);
+        box-shadow: 0 0 0 rgba(0, 180, 216, 0);
+    }
+
+    80%,
+    100% {
+        border-color: rgba(0, 180, 216, 0.8);
+        box-shadow: 0 0 20px rgba(0, 180, 216, 0.5), inset 0 0 10px rgba(0, 180, 216, 0.3);
+    }
+}
+
+
+/* Center seam glow */
+.gate-seam {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    transform: translateX(-50%);
+    background: linear-gradient(180deg,
+            rgba(0, 180, 216, 0.05) 0%,
+            rgba(0, 180, 216, 0.6) 30%,
+            rgba(0, 180, 216, 0.8) 50%,
+            rgba(0, 180, 216, 0.6) 70%,
+            rgba(0, 180, 216, 0.05) 100%);
+    box-shadow:
+        0 0 15px rgba(0, 180, 216, 0.3),
+        0 0 40px rgba(0, 180, 216, 0.1);
+    z-index: 3;
+    animation: seamPulse 3s ease-in-out infinite alternate;
+    transition: opacity 0.5s ease;
+}
+
+.splash-arriving .gate-seam {
+    opacity: 0;
+    animation: seamAppear 2s ease forwards;
+}
+
+@keyframes seamAppear {
+
+    0%,
+    80% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.splash-opening .gate-seam {
+    opacity: 0;
+}
+
+@keyframes seamPulse {
+    0% {
+        background: linear-gradient(180deg, rgba(0, 180, 216, 0.05) 0%, rgba(0, 180, 216, 0.4) 50%, rgba(0, 180, 216, 0.05) 100%);
+        box-shadow: 0 0 10px rgba(0, 180, 216, 0.2);
+    }
+
+    100% {
+        background: linear-gradient(180deg, rgba(0, 180, 216, 0.1) 0%, rgba(0, 180, 216, 0.9) 50%, rgba(0, 180, 216, 0.1) 100%);
+        box-shadow: 0 0 25px rgba(0, 180, 216, 0.6), 0 0 60px rgba(0, 180, 216, 0.3);
+    }
+}
+
+
+/* ===== Title & Rocky Text ===== */
+.splash-title {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 5;
+    opacity: 0;
+    animation: titleAppear 1s ease forwards;
+    animation-delay: 2.2s;
+    /* Wait for gate to mostly close */
+}
+
+.splash-opening .splash-title {
+    animation: titleFadeUp 0.8s ease forwards;
+}
+
+@keyframes titleAppear {
+    from {
+        opacity: 0;
+        transform: translate(-50%, calc(-50% + 10px));
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+@keyframes titleFadeUp {
+    to {
+        opacity: 0;
+        transform: translate(-50%, calc(-50% - 30px));
+    }
+}
+
+/* Rocky Text Effect */
+.pattern-text {
+    position: relative;
+    /* Base color & stone gradient */
+    background: linear-gradient(135deg, #FFDF73, #D4AF37, #996515, #D4AF37);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    /* Inset shadow (engraved look) */
+    text-shadow:
+        inset 2px 2px 4px rgba(0, 0, 0, 0.8),
+        -1px -1px 2px rgba(255, 255, 255, 0.2),
+        1px 1px 3px rgba(0, 0, 0, 0.6);
+    /* Pulsing glow */
+    animation: textGlowPulse 4s ease-in-out infinite alternate;
+}
+
+/* Pseudo-element for CSS dirt/noise to make it rocky */
+.pattern-text::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    /* Noise texture via repeating radial gradients */
+    background: repeating-radial-gradient(rgba(0, 0, 0, 0.1) 0px,
+            rgba(0, 0, 0, 0.3) 1px,
+            transparent 2px,
+            transparent 4px);
+    background-size: 8px 8px;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes textGlowPulse {
+
+    0%,
+    20% {
+        filter: drop-shadow(0 0 2px rgba(212, 175, 55, 0.2));
+    }
+
+    80%,
+    100% {
+        filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.6)) brightness(1.2);
+    }
+}
+
+.splash-brand {
+    font-family: 'Cinzel', serif;
+    font-size: 3.8rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+    line-height: 1;
+    position: relative;
+    display: inline-block;
+}
+
+.splash-tagline {
+    font-size: 1.05rem;
+    color: rgba(0, 180, 216, 0.7);
+    /* Slightly brighter cyan */
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    font-weight: 600;
+    /* Cyan stone glow */
+    background: linear-gradient(135deg, #48CAE4, #00B4D8, #0077B6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.8);
+    animation: cyanTextPulse 4s ease-in-out infinite alternate 1s;
+    /* delayed */
+}
+
+@keyframes cyanTextPulse {
+
+    0%,
+    20% {
+        filter: drop-shadow(0 0 2px rgba(0, 180, 216, 0.2));
+    }
+
+    80%,
+    100% {
+        filter: drop-shadow(0 0 12px rgba(0, 180, 216, 0.8)) brightness(1.3);
+    }
+}
+
+
+/* Enter button - Orange Parietal Theme */
+.splash-enter-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 6;
+    padding: 14px 48px;
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #051520;
+    /* Dark text for contrast */
+    background: linear-gradient(135deg, #FF6B00, #D94800, #A62900);
+    border: 1px solid rgba(255, 107, 0, 0.6);
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow:
+        inset 0 2px 4px rgba(255, 255, 255, 0.4),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.2),
+        0 4px 24px rgba(217, 72, 0, 0.4);
+    animation: enterBtnAppear 0.6s ease forwards, btnGlowPulse 3s ease-in-out 0.6s infinite alternate;
+    opacity: 0;
+}
+
+.splash-enter-btn:hover {
+    transform: translate(-50%, calc(-50% - 3px)) scale(1.02);
+    box-shadow:
+        inset 0 2px 4px rgba(255, 255, 255, 0.5),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+        0 8px 36px rgba(217, 72, 0, 0.7);
+}
+
+@keyframes enterBtnAppear {
+    from {
+        opacity: 0;
+        transform: translate(-50%, calc(-50% + 15px));
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+@keyframes btnGlowPulse {
+    0% {
+        box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.4), inset 0 -2px 4px rgba(0, 0, 0, 0.2), 0 4px 24px rgba(217, 72, 0, 0.4);
+        filter: brightness(1);
+    }
+
+    100% {
+        box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.6), inset 0 -2px 4px rgba(0, 0, 0, 0.2), 0 4px 40px rgba(217, 72, 0, 0.8), 0 0 20px rgba(217, 72, 0, 0.5);
+        filter: brightness(1.15);
+    }
+}
+
+/* ===== Auth Wrapper ===== */
+.splash-auth-wrapper {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: authFadeIn 0.5s ease forwards;
+}
+
+@keyframes authFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.splash-auth-wrapper .auth-overlay {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(6px);
+}
+
+.splash-opening .splash-auth-wrapper {
+    animation: authFadeOut 0.4s ease forwards;
+}
+
+@keyframes authFadeOut {
+    to {
+        opacity: 0;
+        pointer-events: none;
+    }
+}
+
+.splash-opening {
+    animation: splashExit 1.8s ease forwards;
+}
+
+@keyframes splashExit {
+
+    0%,
+    70% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        pointer-events: none;
+    }
+}
