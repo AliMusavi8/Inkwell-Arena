@@ -25,21 +25,26 @@ function App() {
     setSplashDone(true);
   }, []);
 
-  // Show splash screen if not yet completed and user isn't authenticated
-  const showSplash = !splashDone && status !== 'authenticated';
+  const handleGuestSplashComplete = useCallback(() => {
+    setSplashDone(true);
+    setIsGuest(true);
+  }, []);
 
-  // If loading and no splash yet, show the splash (it handles the loading state)
+  // Show splash overlay until the gate animation finishes
+  const showSplash = !splashDone;
+
+  // While loading auth state, just show the splash
   if (status === 'loading') {
     return <SplashScreen onComplete={handleSplashComplete} />;
   }
 
-  // If unauthenticated and splash not done → show splash with auth
+  // If unauthenticated and splash not done (and not guest) → full-screen splash with auth
   if (status === 'unauthenticated' && !splashDone && !isGuest) {
-    return <SplashScreen onComplete={() => { setSplashDone(true); setIsGuest(true); }} />;
+    return <SplashScreen onComplete={handleGuestSplashComplete} />;
   }
 
-  // If unauthenticated but splash is done (logged out after entering) → show auth modal again
-  if (status === 'unauthenticated' && !isGuest) {
+  // If unauthenticated, splash is done, and not a guest → show auth modal (e.g. logged out)
+  if (status === 'unauthenticated' && splashDone && !isGuest) {
     return (
       <div style={{ height: '100vh', background: 'var(--color-bg)' }}>
         <AuthModal />
@@ -49,7 +54,7 @@ function App() {
 
   return (
     <>
-      {/* Splash exit animation — overlays briefly while gates open */}
+      {/* Splash stays as overlay until gate animation completes */}
       {showSplash && <SplashScreen onComplete={handleSplashComplete} />}
 
       <Routes>

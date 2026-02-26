@@ -76,9 +76,12 @@ export default function AuthModal({ onGuestMode, onClose }: AuthModalProps) {
                         {tab === 'signup' && (
                             <>
                                 <div className="auth-field">
-                                    <label>Username</label>
+                                    <label htmlFor="username">Username</label>
                                     <input
+                                        id="username"
+                                        name="username"
                                         type="text"
+                                        autoComplete="username"
                                         className="auth-input"
                                         placeholder="johndoe"
                                         value={username}
@@ -88,9 +91,12 @@ export default function AuthModal({ onGuestMode, onClose }: AuthModalProps) {
                                     />
                                 </div>
                                 <div className="auth-field">
-                                    <label>Display Name</label>
+                                    <label htmlFor="name">Display Name</label>
                                     <input
+                                        id="name"
+                                        name="name"
                                         type="text"
+                                        autoComplete="name"
                                         className="auth-input"
                                         placeholder="John Doe"
                                         value={name}
@@ -100,9 +106,12 @@ export default function AuthModal({ onGuestMode, onClose }: AuthModalProps) {
                             </>
                         )}
                         <div className="auth-field">
-                            <label>Email</label>
+                            <label htmlFor="email">Email</label>
                             <input
+                                id="email"
+                                name="email"
                                 type="email"
+                                autoComplete="email"
                                 className="auth-input"
                                 placeholder="you@example.com"
                                 value={email}
@@ -111,9 +120,12 @@ export default function AuthModal({ onGuestMode, onClose }: AuthModalProps) {
                             />
                         </div>
                         <div className="auth-field">
-                            <label>Password</label>
+                            <label htmlFor="password">Password</label>
                             <input
+                                id="password"
+                                name="password"
                                 type="password"
+                                autoComplete={tab === 'signup' ? 'new-password' : 'current-password'}
                                 className="auth-input"
                                 placeholder="••••••••"
                                 value={password}

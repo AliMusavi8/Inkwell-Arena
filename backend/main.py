@@ -56,22 +56,24 @@ async def websocket_endpoint(websocket: WebSocket, token: str):
         await websocket.close(code=4001)
         return
 
+    # Short-lived DB session for initial validation + marking online
     db: Session = next(get_db())
-    user = db.query(User).filter(User.id == user_id).first()
-    if not user:
-        await websocket.close(code=4001)
-        db.close()
-        return
-
-    # Connect & mark online
-    await manager.connect(websocket, user_id)
-    user.is_online = True
-    user.last_seen = datetime.utcnow()
-    db.commit()
+    try:
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            await websocket.close(code=4001)
+            return
+        username = user.username  # cache for use in message loop
+        await manager.connect(websocket, user_id)
+        user.is_online = True
+        user.last_seen = datetime.utcnow()
+        db.commit()
+    finally:
+        db.close()  # release connection back to pool immediately
 
     # Broadcast that this user is online
     await manager.broadcast(
-        {"type": "user_online", "user_id": user_id, "username": user.username},
+        {"type": "user_online", "user_id": user_id, "username": username},
         exclude=user_id,
     )
 
@@ -104,8 +106,9 @@ async def websocket_endpoint(websocket: WebSocket, token: str):
                 await manager.send_to_user(defender_id, {
                     "type": "challenge_received",
                     "challenger_id": user_id,
-                    "challenger_username": user.username,
+                    "challenger_username": username,
                     "challenge_id": message.get("challenge_id"),
+                    "game_type": message.get("game_type", "tictactoe"),
                 })
 
             elif msg_type == "challenge_accepted":
@@ -113,8 +116,9 @@ async def websocket_endpoint(websocket: WebSocket, token: str):
                 await manager.send_to_user(challenger_id, {
                     "type": "challenge_accepted",
                     "defender_id": user_id,
-                    "defender_username": user.username,
+                    "defender_username": username,
                     "challenge_id": message.get("challenge_id"),
+                    "game_type": message.get("game_type", "tictactoe"),
                 })
 
             elif msg_type == "challenge_declined":
@@ -122,7 +126,7 @@ async def websocket_endpoint(websocket: WebSocket, token: str):
                 await manager.send_to_user(challenger_id, {
                     "type": "challenge_declined",
                     "defender_id": user_id,
-                    "defender_username": user.username,
+                    "defender_username": username,
                     "challenge_id": message.get("challenge_id"),
                 })
 
@@ -141,22 +145,52 @@ async def websocket_endpoint(websocket: WebSocket, token: str):
                     "winner_username": message.get("winner_username"),
                 })
 
+            # ── Chicken Runner messages ──
+            elif msg_type == "runner_ready":
+                opponent_id = message.get("opponent_id")
+                await manager.send_to_user(opponent_id, {
+                    "type": "runner_ready",
+                    "from_user_id": user_id,
+                    "challenge_id": message.get("challenge_id"),
+                })
+
+            elif msg_type == "runner_score":
+                opponent_id = message.get("opponent_id")
+                await manager.send_to_user(opponent_id, {
+                    "type": "runner_score",
+                    "from_user_id": user_id,
+                    "score": message.get("score"),
+                    "challenge_id": message.get("challenge_id"),
+                })
+
+            elif msg_type == "runner_dead":
+                opponent_id = message.get("opponent_id")
+                await manager.send_to_user(opponent_id, {
+                    "type": "runner_dead",
+                    "from_user_id": user_id,
+                    "score": message.get("score"),
+                    "challenge_id": message.get("challenge_id"),
+                })
+
     except WebSocketDisconnect:
         pass
     except Exception:
         pass
     finally:
         manager.disconnect(user_id)
+
+        # Short-lived DB session for marking offline
+        db2: Session = next(get_db())
         try:
-            user = db.query(User).filter(User.id == user_id).first()
+            user = db2.query(User).filter(User.id == user_id).first()
             if user:
                 user.is_online = False
                 user.last_seen = datetime.utcnow()
-                db.commit()
+                db2.commit()
         except Exception:
             pass
         finally:
-            db.close()
+            db2.close()  # release connection back to pool immediately
 
         await manager.broadcast(
             {"type": "user_offline", "user_id": user_id},

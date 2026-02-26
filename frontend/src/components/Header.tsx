@@ -19,6 +19,7 @@ interface PendingChallenge {
     challenge_id: number;
     challenger_id: number;
     challenger_username: string;
+    game_type: 'tictactoe' | 'chickenrunner';
 }
 
 export default function Header() {
@@ -39,6 +40,7 @@ export default function Header() {
                 challenge_id: lastMessage.challenge_id,
                 challenger_id: lastMessage.challenger_id,
                 challenger_username: lastMessage.challenger_username,
+                game_type: (lastMessage.game_type as 'tictactoe' | 'chickenrunner') || 'tictactoe',
             }]);
             setShowNotifications(true);
         }
@@ -55,6 +57,7 @@ export default function Header() {
                 type: 'challenge_accepted',
                 challenger_id: challenge.challenger_id,
                 challenge_id: challenge.challenge_id,
+                game_type: challenge.game_type,
             });
 
             // Navigate to Challenge page and start the game (defender side)
@@ -64,6 +67,7 @@ export default function Header() {
                         challengeId: challenge.challenge_id,
                         opponentId: challenge.challenger_id,
                         opponentUsername: challenge.challenger_username,
+                        gameType: challenge.game_type,
                     },
                 },
             });
@@ -126,7 +130,7 @@ export default function Header() {
                                             <div key={c.challenge_id} className="notification-item unread">
                                                 <div className="notification-content">
                                                     <div className="notification-text">
-                                                        <strong>{c.challenger_username}</strong> challenged you to Tic Tac Toe! ⚔️
+                                                        <strong>{c.challenger_username}</strong> challenged you to {c.game_type === 'chickenrunner' ? '🐔 Chicken Runner' : '❌⭕ Tic Tac Toe'}! ⚔️
                                                     </div>
                                                     <div className="notification-actions">
                                                         <button

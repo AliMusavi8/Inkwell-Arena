@@ -17,6 +17,7 @@ import {
     type ConqueredAccountData,
 } from '../api';
 import TicTacToe from '../components/TicTacToe';
+import ChickenRunner from '../components/ChickenRunner';
 import './Challenge.css';
 
 export default function Challenge() {
@@ -31,6 +32,8 @@ export default function Challenge() {
         opponentId: number;
         opponentUsername: string;
         isChallenger: boolean;
+        gameType: 'tictactoe' | 'chickenrunner';
+        cpuMode?: boolean;
     } | null>(null);
 
     // Waiting state for challenger
@@ -43,6 +46,7 @@ export default function Challenge() {
     const [staleChallenge, setStaleChallenge] = useState<ChallengeData | null>(null);
     const [underSiege, setUnderSiege] = useState<ConqueredAccountData[]>([]);
     const [freedomMessage, setFreedomMessage] = useState<string | null>(null);
+    const [gamePicker, setGamePicker] = useState<{ targetUser: UserData } | null>(null);
 
     useEffect(() => {
         loadData();
@@ -51,15 +55,15 @@ export default function Challenge() {
 
     // Check if navigated here after accepting a challenge (defender side)
     useEffect(() => {
-        const state = location.state as { acceptedChallenge?: { challengeId: number; opponentId: number; opponentUsername: string } } | null;
+        const state = location.state as { acceptedChallenge?: { challengeId: number; opponentId: number; opponentUsername: string; gameType?: string } } | null;
         if (state?.acceptedChallenge) {
             setActiveGame({
                 challengeId: state.acceptedChallenge.challengeId,
                 opponentId: state.acceptedChallenge.opponentId,
                 opponentUsername: state.acceptedChallenge.opponentUsername,
-                isChallenger: false, // defender
+                isChallenger: false,
+                gameType: (state.acceptedChallenge.gameType as 'tictactoe' | 'chickenrunner') || 'tictactoe',
             });
-            // Clear the state so it doesn't re-trigger on navigation
             window.history.replaceState({}, '');
         }
     }, [location.state]);
@@ -74,6 +78,7 @@ export default function Challenge() {
                 opponentId: lastMessage.defender_id,
                 opponentUsername: lastMessage.defender_username,
                 isChallenger: true,
+                gameType: (lastMessage.game_type as 'tictactoe' | 'chickenrunner') || 'tictactoe',
             });
         } else if (lastMessage.type === 'siege_released') {
             // Loser gets notified — show dramatic freedom message
@@ -106,22 +111,21 @@ export default function Challenge() {
         }
     };
 
-    const handleChallenge = async (targetUser: UserData) => {
+    const handleChallenge = async (targetUser: UserData, gameType: 'tictactoe' | 'chickenrunner') => {
+        setGamePicker(null);
         try {
             const challenge = await apiCreateChallenge(targetUser.id);
-            // Notify opponent via WebSocket
             sendMessage({
                 type: 'challenge_sent',
                 defender_id: targetUser.id,
                 challenge_id: challenge.id,
+                game_type: gameType,
             });
-            // Show waiting overlay instead of alert
             setWaitingFor({
                 username: targetUser.display_name || targetUser.username,
                 challengeId: challenge.id,
             });
         } catch (err: any) {
-            // Only use alert for actual errors
             alert(err.message || 'Failed to send challenge');
         }
     };
@@ -138,6 +142,7 @@ export default function Challenge() {
             opponentId: isChallenger ? challenge.defender_id : challenge.challenger_id,
             opponentUsername: isChallenger ? challenge.defender_username : challenge.challenger_username,
             isChallenger,
+            gameType: 'tictactoe', // default for legacy
         });
         setStaleChallenge(null);
     };
@@ -183,8 +188,20 @@ export default function Challenge() {
 
     return (
         <div className="challenge-page animate-fade-in">
-            {/* TicTacToe Game Modal */}
-            {activeGame && user && (
+            {/* Game Modal */}
+            {activeGame && user && activeGame.gameType === 'chickenrunner' && (
+                <ChickenRunner
+                    challengeId={activeGame.challengeId}
+                    currentUserId={user.id}
+                    currentUsername={user.display_name || user.username}
+                    opponentId={activeGame.opponentId}
+                    opponentUsername={activeGame.opponentUsername}
+                    isChallenger={activeGame.isChallenger}
+                    onComplete={handleGameComplete}
+                    cpuMode={activeGame.cpuMode}
+                />
+            )}
+            {activeGame && user && activeGame.gameType !== 'chickenrunner' && (
                 <TicTacToe
                     challengeId={activeGame.challengeId}
                     currentUserId={user.id}
@@ -193,6 +210,7 @@ export default function Challenge() {
                     opponentUsername={activeGame.opponentUsername}
                     isChallenger={activeGame.isChallenger}
                     onComplete={handleGameComplete}
+                    cpuMode={activeGame.cpuMode}
                 />
             )}
 
@@ -252,7 +270,72 @@ export default function Challenge() {
             <div className="challenge-header">
                 <div>
                     <h1>Challenge Arena ⚔️</h1>
-                    <p>Challenge other users to Tic Tac Toe. Win and post on their account for 10 minutes!</p>
+                    <p>Challenge other users to Tic Tac Toe or Chicken Runner. Win and post on their account for 10 minutes!</p>
+                </div>
+            </div>
+
+            {/* Game Picker Popover */}
+            {gamePicker && (
+                <div className="game-picker-overlay" onClick={() => setGamePicker(null)}>
+                    <div className="game-picker-modal" onClick={e => e.stopPropagation()}>
+                        <h3>Choose a Game</h3>
+                        <p>Challenge <strong>@{gamePicker.targetUser.display_name || gamePicker.targetUser.username}</strong></p>
+                        <div className="game-picker-options">
+                            <button
+                                className="game-picker-btn"
+                                onClick={() => handleChallenge(gamePicker.targetUser, 'tictactoe')}
+                            >
+                                <span className="game-picker-icon">❌⭕</span>
+                                <span className="game-picker-label">Tic Tac Toe</span>
+                            </button>
+                            <button
+                                className="game-picker-btn"
+                                onClick={() => handleChallenge(gamePicker.targetUser, 'chickenrunner')}
+                            >
+                                <span className="game-picker-icon">🐔💨</span>
+                                <span className="game-picker-label">Chicken Runner</span>
+                            </button>
+                        </div>
+                        <button className="btn waiting-cancel-btn" onClick={() => setGamePicker(null)}>
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Practice Mode Section */}
+            <div className="card practice-section">
+                <h3>🎮 Practice Mode</h3>
+                <p>Test the games against a CPU opponent — no stakes, just practice!</p>
+                <div className="game-picker-options">
+                    <button
+                        className="game-picker-btn"
+                        onClick={() => setActiveGame({
+                            challengeId: 0,
+                            opponentId: 0,
+                            opponentUsername: 'CPU',
+                            isChallenger: true,
+                            gameType: 'tictactoe',
+                            cpuMode: true,
+                        })}
+                    >
+                        <span className="game-picker-icon">❌⭕</span>
+                        <span className="game-picker-label">Practice Tic Tac Toe</span>
+                    </button>
+                    <button
+                        className="game-picker-btn"
+                        onClick={() => setActiveGame({
+                            challengeId: 0,
+                            opponentId: 0,
+                            opponentUsername: 'CPU',
+                            isChallenger: true,
+                            gameType: 'chickenrunner',
+                            cpuMode: true,
+                        })}
+                    >
+                        <span className="game-picker-icon">🐔💨</span>
+                        <span className="game-picker-label">Practice Chicken Runner</span>
+                    </button>
                 </div>
             </div>
 
@@ -329,7 +412,7 @@ export default function Challenge() {
                                     </div>
                                     <button
                                         className="btn btn-primary challenge-btn"
-                                        onClick={() => handleChallenge(u)}
+                                        onClick={() => setGamePicker({ targetUser: u })}
                                         disabled={!isOnline || !!waitingFor}
                                     >
                                         <GiSwordClash /> Challenge

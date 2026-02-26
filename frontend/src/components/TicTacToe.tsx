@@ -12,6 +12,36 @@ const WINNING_LINES = [
     [0, 4, 8], [2, 4, 6],            // diags
 ];
 
+// Simple CPU AI: tries to win, then block, then center, then random
+function getCpuMove(board: CellValue[], cpuSym: CellValue, humanSym: CellValue): number {
+    const empty = board.map((c, i) => c === null ? i : -1).filter(i => i !== -1);
+    if (empty.length === 0) return -1;
+
+    // Try to win
+    for (const pos of empty) {
+        const test = [...board];
+        test[pos] = cpuSym;
+        for (const [a, b, c] of WINNING_LINES) {
+            if (test[a] && test[a] === test[b] && test[a] === test[c]) return pos;
+        }
+    }
+
+    // Block opponent from winning
+    for (const pos of empty) {
+        const test = [...board];
+        test[pos] = humanSym;
+        for (const [a, b, c] of WINNING_LINES) {
+            if (test[a] && test[a] === test[b] && test[a] === test[c]) return pos;
+        }
+    }
+
+    // Take center if free
+    if (board[4] === null) return 4;
+
+    // Random from remaining
+    return empty[Math.floor(Math.random() * empty.length)];
+}
+
 interface TicTacToeProps {
     challengeId: number;
     currentUserId: number;
@@ -20,6 +50,7 @@ interface TicTacToeProps {
     opponentUsername: string;
     isChallenger: boolean; // true = X (goes first)
     onComplete: (winnerId: number | null) => void;
+    cpuMode?: boolean;
 }
 
 export default function TicTacToe({
@@ -30,6 +61,7 @@ export default function TicTacToe({
     opponentUsername,
     isChallenger,
     onComplete,
+    cpuMode = false,
 }: TicTacToeProps) {
     const { sendMessage, lastMessage } = useWebSocket();
     const [board, setBoard] = useState<CellValue[]>(Array(9).fill(null));
@@ -40,6 +72,7 @@ export default function TicTacToe({
     const [gameOver, setGameOver] = useState(false);
 
     const mySymbol: CellValue = isChallenger ? 'X' : 'O';
+    const cpuSymbol: CellValue = isChallenger ? 'O' : 'X';
     const isMyTurn = (mySymbol === 'X' && isXNext) || (mySymbol === 'O' && !isXNext);
 
     // Check for winner
@@ -55,8 +88,9 @@ export default function TicTacToe({
         return null; // game continues
     }, []);
 
-    // Listen for opponent moves via WebSocket
+    // Listen for opponent moves via WebSocket (skip in CPU mode)
     useEffect(() => {
+        if (cpuMode) return;
         if (!lastMessage || lastMessage.type !== 'game_move') return;
         if (lastMessage.challenge_id !== challengeId) return;
         if (lastMessage.from_user_id !== opponentId) return;
@@ -78,7 +112,7 @@ export default function TicTacToe({
             return newBoard;
         });
         setIsXNext(prev => !prev);
-    }, [lastMessage, challengeId, opponentId, mySymbol, checkWinner]);
+    }, [lastMessage, challengeId, opponentId, mySymbol, checkWinner, cpuMode]);
 
     // Handle cell click
     const handleClick = (index: number) => {
@@ -89,13 +123,15 @@ export default function TicTacToe({
         setBoard(newBoard);
         setIsXNext(!isXNext);
 
-        // Send move via WebSocket
-        sendMessage({
-            type: 'game_move',
-            opponent_id: opponentId,
-            position: index,
-            challenge_id: challengeId,
-        });
+        // Send move via WebSocket (skip in CPU mode)
+        if (!cpuMode) {
+            sendMessage({
+                type: 'game_move',
+                opponent_id: opponentId,
+                position: index,
+                challenge_id: challengeId,
+            });
+        }
 
         const result = checkWinner(newBoard);
         if (result) {
@@ -106,9 +142,10 @@ export default function TicTacToe({
         }
     };
 
-    // Complete game via API when game is over
+    // Complete game via API when game is over (skip in CPU mode)
     useEffect(() => {
         if (!gameOver) return;
+        if (cpuMode) return;
 
         let winnerId = 0;
         if (winner === 'X') {
@@ -119,7 +156,6 @@ export default function TicTacToe({
 
         apiCompleteChallenge(challengeId, winnerId).catch(() => { });
 
-        // Notify opponent
         sendMessage({
             type: 'game_over',
             opponent_id: opponentId,
@@ -127,6 +163,33 @@ export default function TicTacToe({
             challenge_id: challengeId,
         });
     }, [gameOver]);
+
+    // ── CPU AI: make a move when it's CPU's turn ──
+    useEffect(() => {
+        if (!cpuMode || gameOver) return;
+        const isCpuTurn = (cpuSymbol === 'X' && isXNext) || (cpuSymbol === 'O' && !isXNext);
+        if (!isCpuTurn) return;
+
+        const delay = 500 + Math.random() * 1000; // 0.5–1.5s
+        const timer = setTimeout(() => {
+            const move = getCpuMove(board, cpuSymbol, mySymbol);
+            if (move === -1) return;
+
+            const newBoard = [...board];
+            newBoard[move] = cpuSymbol;
+            setBoard(newBoard);
+            setIsXNext(!isXNext);
+
+            const result = checkWinner(newBoard);
+            if (result) {
+                setWinner(result.winner);
+                setWinLine(result.line);
+                if (!result.winner) setIsDraw(true);
+                setGameOver(true);
+            }
+        }, delay);
+        return () => clearTimeout(timer);
+    }, [cpuMode, isXNext, gameOver, board]);
 
     const handleClose = () => {
         const winnerId = winner === 'X'
@@ -143,6 +206,10 @@ export default function TicTacToe({
         if (isDraw) return '🤝 It\'s a Draw!';
         if (!winner) return '';
         const winnerIsMe = (winner === 'X' && isChallenger) || (winner === 'O' && !isChallenger);
+        if (cpuMode) {
+            if (winnerIsMe) return '🎉 You beat the CPU! Nice practice!';
+            return '😔 The CPU won! Try again!';
+        }
         if (winnerIsMe) {
             return `🎉 You Won! You have 10 minutes of access to @${opponentUsername}'s account!`;
         }
