@@ -157,30 +157,6 @@
     font-size: 1.6rem;
 }
 
-/* ===== History Toggle Button ===== */
-.history-toggle-btn {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 16px;
-    width: 100%;
-    justify-content: center;
-    padding: 10px 16px;
-    background: rgba(200, 120, 20, 0.08);
-    border: 1px solid rgba(200, 120, 20, 0.25);
-    border-radius: var(--radius-md);
-    color: var(--color-text-secondary);
-    font-size: 0.85rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.history-toggle-btn:hover {
-    background: rgba(200, 120, 20, 0.15);
-    color: var(--color-text-primary);
-    border-color: rgba(200, 120, 20, 0.4);
-}
 
 /* ===== History Modal ===== */
 .history-modal {
@@ -237,14 +213,6 @@
     background: rgba(255, 255, 255, 0.06);
 }
 
-.challenge-header h1 {
-    margin-bottom: 4px;
-}
-
-.challenge-header p {
-    color: var(--color-text-secondary);
-    font-size: 0.9rem;
-}
 
 /* Active Challenge Banner */
 .active-challenge-banner {
@@ -511,14 +479,6 @@
 }
 
 /* History */
-.challenge-history {
-    padding: var(--space-lg);
-}
-
-.challenge-history h3 {
-    margin-bottom: var(--space-md);
-    font-size: 1rem;
-}
 
 .history-list {
     display: flex;
@@ -782,81 +742,4 @@
     to {
         opacity: 1;
     }
-}
-
-.game-picker-modal {
-    background: var(--color-bg-elevated);
-    border: 1px solid var(--color-border);
-    border-radius: 16px;
-    padding: 28px 32px;
-    text-align: center;
-    min-width: 300px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-}
-
-.game-picker-modal h3 {
-    font-size: 1.2rem;
-    margin-bottom: 6px;
-    color: var(--color-text-primary);
-}
-
-.game-picker-modal p {
-    font-size: 0.85rem;
-    color: var(--color-text-secondary);
-    margin-bottom: 20px;
-}
-
-.game-picker-options {
-    display: flex;
-    gap: 16px;
-    justify-content: center;
-    margin-bottom: 18px;
-}
-
-.game-picker-btn {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    padding: 20px 28px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1.5px solid var(--color-border);
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    color: var(--color-text-primary);
-}
-
-.game-picker-btn:hover {
-    border-color: var(--color-primary-mid);
-    background: rgba(0, 180, 216, 0.08);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 180, 216, 0.15);
-}
-
-.game-picker-icon {
-    font-size: 2rem;
-}
-
-.game-picker-label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-}
-
-/* ===== Practice Mode Section ===== */
-.practice-section {
-    text-align: center;
-    padding: var(--space-lg);
-}
-
-.practice-section h3 {
-    font-size: 1.1rem;
-    margin-bottom: 4px;
-}
-
-.practice-section p {
-    font-size: 0.85rem;
-    color: var(--color-text-secondary);
-    margin-bottom: 16px;
 }
