@@ -46,7 +46,10 @@ export default function Challenge() {
     const [staleChallenge, setStaleChallenge] = useState<ChallengeData | null>(null);
     const [underSiege, setUnderSiege] = useState<ConqueredAccountData[]>([]);
     const [freedomMessage, setFreedomMessage] = useState<string | null>(null);
-    const [gamePicker, setGamePicker] = useState<{ targetUser: UserData } | null>(null);
+    const [showHistory, setShowHistory] = useState(false);
+    const [showPlayers, setShowPlayers] = useState(false);
+    const [selectedGame, setSelectedGame] = useState<'tictactoe' | 'chickenrunner' | null>(null);
+    const [showPlayerListFor, setShowPlayerListFor] = useState<'tictactoe' | 'chickenrunner' | null>(null);
 
     useEffect(() => {
         loadData();
@@ -112,7 +115,7 @@ export default function Challenge() {
     };
 
     const handleChallenge = async (targetUser: UserData, gameType: 'tictactoe' | 'chickenrunner') => {
-        setGamePicker(null);
+        setShowPlayerListFor(null);
         try {
             const challenge = await apiCreateChallenge(targetUser.id);
             sendMessage({
@@ -267,190 +270,220 @@ export default function Challenge() {
                 </div>
             )}
 
-            <div className="challenge-header">
-                <div>
-                    <h1>Challenge Arena ⚔️</h1>
-                    <p>Challenge other users to Tic Tac Toe or Chicken Runner. Win and post on their account for 10 minutes!</p>
+            {/* ── Game Cards Grid ── */}
+            <div className="games-grid">
+                <div className="game-card" onClick={() => setSelectedGame('tictactoe')}>
+                    <span className="game-card-emoji">❌⭕</span>
+                    <span className="game-card-title">Tic Tac Toe</span>
+                    <span className="game-card-desc">Classic strategy</span>
+                </div>
+                <div className="game-card" onClick={() => setSelectedGame('chickenrunner')}>
+                    <span className="game-card-emoji">🐔💨</span>
+                    <span className="game-card-title">Chicken Runner</span>
+                    <span className="game-card-desc">Survive longest</span>
+                </div>
+                <div className="game-card game-card-coming">
+                    <span className="game-card-emoji">🎯</span>
+                    <span className="game-card-title">Coming Soon</span>
+                </div>
+                <div className="game-card game-card-coming">
+                    <span className="game-card-emoji">🏎️</span>
+                    <span className="game-card-title">Coming Soon</span>
+                </div>
+                <div className="game-card game-card-coming">
+                    <span className="game-card-emoji">♟️</span>
+                    <span className="game-card-title">Coming Soon</span>
+                </div>
+                <div className="game-card game-card-coming">
+                    <span className="game-card-emoji">🧩</span>
+                    <span className="game-card-title">Coming Soon</span>
+                </div>
+                <div className="game-card game-card-coming">
+                    <span className="game-card-emoji">🎲</span>
+                    <span className="game-card-title">Coming Soon</span>
+                </div>
+                <div className="game-card game-card-coming">
+                    <span className="game-card-emoji">🎮</span>
+                    <span className="game-card-title">Coming Soon</span>
                 </div>
             </div>
 
-            {/* Game Picker Popover */}
-            {gamePicker && (
-                <div className="game-picker-overlay" onClick={() => setGamePicker(null)}>
-                    <div className="game-picker-modal" onClick={e => e.stopPropagation()}>
-                        <h3>Choose a Game</h3>
-                        <p>Challenge <strong>@{gamePicker.targetUser.display_name || gamePicker.targetUser.username}</strong></p>
-                        <div className="game-picker-options">
+            {/* ── Bottom Buttons ── */}
+            <div className="challenge-bottom-bar">
+                <button className="btn challenge-bottom-btn" onClick={() => setShowPlayers(true)}>
+                    <GiSwordClash /> Players
+                </button>
+                <button className="btn challenge-bottom-btn" onClick={() => setShowHistory(true)}>
+                    <HiOutlineClock /> Recent
+                </button>
+            </div>
+
+            {/* ── Game Action Popup (Challenge / Practice) ── */}
+            {selectedGame && (
+                <div className="game-picker-overlay" onClick={() => setSelectedGame(null)}>
+                    <div className="game-action-modal" onClick={e => e.stopPropagation()}>
+                        <h3>{selectedGame === 'tictactoe' ? '❌⭕ Tic Tac Toe' : '🐔💨 Chicken Runner'}</h3>
+                        <p>What would you like to do?</p>
+                        <div className="game-action-options">
                             <button
-                                className="game-picker-btn"
-                                onClick={() => handleChallenge(gamePicker.targetUser, 'tictactoe')}
+                                className="game-action-btn challenge"
+                                onClick={() => {
+                                    const game = selectedGame;
+                                    setSelectedGame(null);
+                                    setShowPlayerListFor(game);
+                                }}
                             >
-                                <span className="game-picker-icon">❌⭕</span>
-                                <span className="game-picker-label">Tic Tac Toe</span>
+                                <GiSwordClash className="game-action-icon" />
+                                <span>Challenge a Player</span>
                             </button>
                             <button
-                                className="game-picker-btn"
-                                onClick={() => handleChallenge(gamePicker.targetUser, 'chickenrunner')}
+                                className="game-action-btn practice"
+                                onClick={() => {
+                                    setActiveGame({
+                                        challengeId: 0,
+                                        opponentId: 0,
+                                        opponentUsername: 'CPU',
+                                        isChallenger: true,
+                                        gameType: selectedGame,
+                                        cpuMode: true,
+                                    });
+                                    setSelectedGame(null);
+                                }}
                             >
-                                <span className="game-picker-icon">🐔💨</span>
-                                <span className="game-picker-label">Chicken Runner</span>
+                                <span className="game-action-icon">🤖</span>
+                                <span>Practice vs CPU</span>
                             </button>
                         </div>
-                        <button className="btn waiting-cancel-btn" onClick={() => setGamePicker(null)}>
+                        <button className="btn waiting-cancel-btn" style={{ marginTop: 12 }} onClick={() => setSelectedGame(null)}>
                             Cancel
                         </button>
                     </div>
                 </div>
             )}
 
-            {/* Practice Mode Section */}
-            <div className="card practice-section">
-                <h3>🎮 Practice Mode</h3>
-                <p>Test the games against a CPU opponent — no stakes, just practice!</p>
-                <div className="game-picker-options">
-                    <button
-                        className="game-picker-btn"
-                        onClick={() => setActiveGame({
-                            challengeId: 0,
-                            opponentId: 0,
-                            opponentUsername: 'CPU',
-                            isChallenger: true,
-                            gameType: 'tictactoe',
-                            cpuMode: true,
-                        })}
-                    >
-                        <span className="game-picker-icon">❌⭕</span>
-                        <span className="game-picker-label">Practice Tic Tac Toe</span>
-                    </button>
-                    <button
-                        className="game-picker-btn"
-                        onClick={() => setActiveGame({
-                            challengeId: 0,
-                            opponentId: 0,
-                            opponentUsername: 'CPU',
-                            isChallenger: true,
-                            gameType: 'chickenrunner',
-                            cpuMode: true,
-                        })}
-                    >
-                        <span className="game-picker-icon">🐔💨</span>
-                        <span className="game-picker-label">Practice Chicken Runner</span>
-                    </button>
-                </div>
-            </div>
-
-            {/* Active Conquests */}
-            {conqueredAccounts.length > 0 && (
-                <div className="card challenge-conquests">
-                    <h3>🏆 Active Conquests</h3>
-                    <div className="conquest-list">
-                        {conqueredAccounts.map((acc: ConqueredAccountData) => (
-                            <div key={acc.user_id} className="conquest-item">
-                                <CircularCountdown expiresAt={acc.expires_at} totalMinutes={10} />
-                                <div className="conquest-info">
-                                    <span className="conquest-name">@{acc.username}</span>
-                                    <span className="conquest-timer">
-                                        <HiOutlineClock /> Expires: <CountdownTimer expiresAt={acc.expires_at} />
-                                    </span>
-                                </div>
-                                <button
-                                    className="btn release-btn"
-                                    onClick={() => handleRelease(acc)}
-                                    title="End siege early"
-                                >
-                                    🏳️ Release
-                                </button>
-                            </div>
-                        ))}
+            {/* ── Player List Popup ── */}
+            {showPlayerListFor && (
+                <div className="game-picker-overlay" onClick={() => setShowPlayerListFor(null)}>
+                    <div className="history-modal" onClick={e => e.stopPropagation()}>
+                        <div className="history-modal-header">
+                            <h3>Choose an Opponent</h3>
+                            <button className="history-modal-close" onClick={() => setShowPlayerListFor(null)}>
+                                <HiOutlineX />
+                            </button>
+                        </div>
+                        <div className="challenge-users-list">
+                            {users.length === 0 ? (
+                                <p className="challenge-empty">No other users yet. Invite your friends!</p>
+                            ) : (
+                                users.map((u) => {
+                                    const isOnline = onlineUserIds.has(u.id);
+                                    return (
+                                        <div className="challenge-user-row" key={u.id}>
+                                            <div className="challenge-user-left">
+                                                <div className="challenge-user-avatar" style={{ background: u.avatar_color }}>
+                                                    {(u.display_name || u.username).split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)}
+                                                </div>
+                                                <div className="challenge-user-info">
+                                                    <span className="challenge-user-name">{u.display_name || u.username}</span>
+                                                    <span className="challenge-user-handle">@{u.username}</span>
+                                                </div>
+                                                <span className={`challenge-user-status ${isOnline ? 'online' : 'offline'}`}>
+                                                    {isOnline ? '🟢 Online' : '⚫ Offline'}
+                                                </span>
+                                            </div>
+                                            <button
+                                                className="btn btn-primary challenge-btn"
+                                                onClick={() => handleChallenge(u, showPlayerListFor)}
+                                                disabled={!isOnline || !!waitingFor}
+                                            >
+                                                <GiSwordClash /> Challenge
+                                            </button>
+                                        </div>
+                                    );
+                                })
+                            )}
+                        </div>
                     </div>
                 </div>
             )}
 
-            {/* Under Siege - someone has access to YOUR account */}
-            {underSiege.length > 0 && (
-                <div className="card challenge-under-siege">
-                    <h3>⚠️ Under Siege</h3>
-                    <p className="siege-desc">These users can post on your account!</p>
-                    <div className="conquest-list">
-                        {underSiege.map((acc: ConqueredAccountData) => (
-                            <div key={acc.user_id} className="conquest-item siege-item">
-                                <CircularCountdown expiresAt={acc.expires_at} totalMinutes={10} color="#E74C6F" />
-                                <div className="conquest-info">
-                                    <span className="conquest-name">@{acc.username}</span>
-                                    <span className="conquest-timer siege-timer">
-                                        <HiOutlineClock /> Access ends in: <CountdownTimer expiresAt={acc.expires_at} />
-                                    </span>
-                                </div>
-                            </div>
-                        ))}
+            {/* ── Players Popup ── */}
+            {showPlayers && (
+                <div className="game-picker-overlay" onClick={() => setShowPlayers(false)}>
+                    <div className="history-modal" onClick={e => e.stopPropagation()}>
+                        <div className="history-modal-header">
+                            <h3>All Players</h3>
+                            <button className="history-modal-close" onClick={() => setShowPlayers(false)}>
+                                <HiOutlineX />
+                            </button>
+                        </div>
+                        <div className="challenge-users-list">
+                            {users.length === 0 ? (
+                                <p className="challenge-empty">No other users yet.</p>
+                            ) : (
+                                users.map((u) => {
+                                    const isOnline = onlineUserIds.has(u.id);
+                                    return (
+                                        <div className="challenge-user-row" key={u.id}>
+                                            <div className="challenge-user-left">
+                                                <div className="challenge-user-avatar" style={{ background: u.avatar_color }}>
+                                                    {(u.display_name || u.username).split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)}
+                                                </div>
+                                                <div className="challenge-user-info">
+                                                    <span className="challenge-user-name">{u.display_name || u.username}</span>
+                                                    <span className="challenge-user-handle">@{u.username}</span>
+                                                </div>
+                                                <span className={`challenge-user-status ${isOnline ? 'online' : 'offline'}`}>
+                                                    {isOnline ? '🟢 Online' : '⚫ Offline'}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    );
+                                })
+                            )}
+                        </div>
                     </div>
                 </div>
             )}
 
-            {/* Online Users */}
-            <div className="card challenge-users-section">
-                <h3>Users</h3>
-                <div className="challenge-users-list">
-                    {users.length === 0 ? (
-                        <p className="challenge-empty">No other users yet. Invite your friends!</p>
-                    ) : (
-                        users.map((u) => {
-                            const isOnline = onlineUserIds.has(u.id);
-                            return (
-                                <div className="challenge-user-row" key={u.id}>
-                                    <div className="challenge-user-left">
-                                        <div className="challenge-user-avatar" style={{ background: u.avatar_color }}>
-                                            {(u.display_name || u.username).split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)}
+            {/* ── History Popup Modal ── */}
+            {showHistory && (
+                <div className="game-picker-overlay" onClick={() => setShowHistory(false)}>
+                    <div className="history-modal" onClick={e => e.stopPropagation()}>
+                        <div className="history-modal-header">
+                            <h3>Recent Challenges</h3>
+                            <button className="history-modal-close" onClick={() => setShowHistory(false)}>
+                                <HiOutlineX />
+                            </button>
+                        </div>
+                        <div className="history-list">
+                            {history.length === 0 ? (
+                                <p className="challenge-empty">No challenges yet.</p>
+                            ) : (
+                                history.map((c) => (
+                                    <div className="history-item" key={c.id}>
+                                        <div className="history-players">
+                                            <span>@{c.challenger_username}</span>
+                                            <span className="history-vs">vs</span>
+                                            <span>@{c.defender_username}</span>
                                         </div>
-                                        <div className="challenge-user-info">
-                                            <span className="challenge-user-name">{u.display_name || u.username}</span>
-                                            <span className="challenge-user-handle">@{u.username}</span>
+                                        <div className="history-result">
+                                            {c.status === 'completed' ? (
+                                                c.winner_id ? (
+                                                    <span className="history-winner">
+                                                        🏆 @{c.winner_id === c.challenger_id ? c.challenger_username : c.defender_username} won
+                                                    </span>
+                                                ) : (
+                                                    <span className="history-draw">🤝 Draw</span>
+                                                )
+                                            ) : (
+                                                <span className="history-status">{c.status}</span>
+                                            )}
                                         </div>
-                                        <span className={`challenge-user-status ${isOnline ? 'online' : 'offline'}`}>
-                                            {isOnline ? '🟢 Online' : '⚫ Offline'}
-                                        </span>
                                     </div>
-                                    <button
-                                        className="btn btn-primary challenge-btn"
-                                        onClick={() => setGamePicker({ targetUser: u })}
-                                        disabled={!isOnline || !!waitingFor}
-                                    >
-                                        <GiSwordClash /> Challenge
-                                    </button>
-                                </div>
-                            );
-                        })
-                    )}
-                </div>
-            </div>
-
-            {/* Challenge History */}
-            {history.length > 0 && (
-                <div className="card challenge-history">
-                    <h3>Recent Challenges</h3>
-                    <div className="history-list">
-                        {history.map((c) => (
-                            <div className="history-item" key={c.id}>
-                                <div className="history-players">
-                                    <span>@{c.challenger_username}</span>
-                                    <span className="history-vs">vs</span>
-                                    <span>@{c.defender_username}</span>
-                                </div>
-                                <div className="history-result">
-                                    {c.status === 'completed' ? (
-                                        c.winner_id ? (
-                                            <span className="history-winner">
-                                                🏆 @{c.winner_id === c.challenger_id ? c.challenger_username : c.defender_username} won
-                                            </span>
-                                        ) : (
-                                            <span className="history-draw">🤝 Draw</span>
-                                        )
-                                    ) : (
-                                        <span className="history-status">{c.status}</span>
-                                    )}
-                                </div>
-                            </div>
-                        ))}
+                                ))
+                            )}
+                        </div>
                     </div>
                 </div>
             )}
