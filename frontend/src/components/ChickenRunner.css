@@ -23,8 +23,8 @@
 }
 
 .runner-modal {
-    width: 860px;
-    max-width: 95vw;
+    width: 1500px;
+    max-width: 96vw;
     background: var(--color-bg-elevated, #0d1b2a);
     border: 1px solid var(--color-border, #1b2838);
     border-radius: 16px;
@@ -58,7 +58,7 @@
 
 /* ── Header ── */
 .runner-header {
-    padding: 20px 24px 14px;
+    padding: 16px 24px 12px;
     text-align: center;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
@@ -67,7 +67,7 @@
     font-family: 'Cinzel', serif;
     font-size: 1.3rem;
     color: var(--color-text-primary, #eee);
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .runner-players {
@@ -109,27 +109,54 @@
     letter-spacing: 0.1em;
 }
 
+/* ── Split Screens Container ── */
+.runner-split-screens {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    justify-content: center;
+}
+
+.runner-screen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+.runner-screen-label {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--color-text-secondary, #aaa);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 4px 12px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 6px;
+}
+
 /* ── Canvas area ── */
 .runner-canvas-wrapper {
     position: relative;
-    margin: 0 auto;
     display: flex;
     justify-content: center;
-    padding: 12px;
+    width: 100%;
 }
 
 .runner-canvas {
     border-radius: 8px;
     border: 1px solid rgba(255, 255, 255, 0.08);
     display: block;
-    max-width: 100%;
+    width: 100%;
     height: auto;
 }
 
 /* ── Waiting overlay ── */
 .runner-waiting-overlay {
     position: absolute;
-    inset: 12px;
+    inset: 0;
     background: rgba(0, 0, 0, 0.8);
     border-radius: 8px;
     display: flex;
@@ -138,7 +165,7 @@
     justify-content: center;
     gap: 16px;
     color: #ccc;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
 }
 
 .runner-waiting-spinner {
@@ -159,7 +186,7 @@
 /* ── Countdown overlay ── */
 .runner-countdown-overlay {
     position: absolute;
-    inset: 12px;
+    inset: 0;
     background: rgba(0, 0, 0, 0.85);
     border-radius: 8px;
     display: flex;
@@ -168,7 +195,7 @@
 }
 
 .runner-countdown-number {
-    font-size: 5rem;
+    font-size: 4rem;
     font-weight: 900;
     font-family: 'Cinzel', serif;
     color: #FFD700;
@@ -206,7 +233,7 @@
 
 /* ── Result overlay ── */
 .runner-result {
-    padding: 20px 24px 24px;
+    padding: 16px 24px 20px;
     text-align: center;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
 }

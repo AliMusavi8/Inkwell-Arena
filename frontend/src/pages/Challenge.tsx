@@ -41,6 +41,7 @@ export default function Challenge() {
     const [waitingFor, setWaitingFor] = useState<{
         username: string;
         challengeId: number;
+        gameType: 'tictactoe' | 'chickenrunner' | 'stickfighter';
     } | null>(null);
 
     // Existing active challenge from DB (for resume/forfeit)
@@ -128,6 +129,7 @@ export default function Challenge() {
             setWaitingFor({
                 username: targetUser.display_name || targetUser.username,
                 challengeId: challenge.id,
+                gameType: gameType,
             });
         } catch (err: any) {
             alert(err.message || 'Failed to send challenge');
@@ -275,7 +277,10 @@ export default function Challenge() {
                     <div className="waiting-modal">
                         <div className="waiting-spinner" />
                         <h3>⚔️ Challenge Sent!</h3>
-                        <p>Waiting for <strong>@{waitingFor.username}</strong> to accept...</p>
+                        <p>
+                            {waitingFor.gameType === 'chickenrunner' ? '🐔 Chicken Runner' : waitingFor.gameType === 'stickfighter' ? '⚔️ Stick Fighter' : '❌⭕ Tic Tac Toe'}
+                            {' '}— Waiting for <strong>@{waitingFor.username}</strong> to accept...
+                        </p>
                         <button className="btn waiting-cancel-btn" onClick={cancelWaiting}>
                             <HiOutlineX /> Cancel
                         </button>

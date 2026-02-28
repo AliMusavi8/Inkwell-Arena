@@ -271,7 +271,7 @@
     flex-direction: column;
     gap: 8px;
     width: calc(100% - 64px);
-    max-width: 500px;
+    max-width: 600px;
 }
 
 .topbar-challenge-toast {
@@ -314,8 +314,8 @@
 
 .toast-accept {
     padding: 6px 14px;
-    background: var(--color-gold);
-    color: #0B0E14;
+    background: #22c55e;
+    color: #fff;
     border: none;
     border-radius: 8px;
     font-size: 0.82rem;
@@ -325,8 +325,9 @@
 }
 
 .toast-accept:hover {
+    background: #16a34a;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(201, 168, 76, 0.3);
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
 }
 
 .toast-decline {

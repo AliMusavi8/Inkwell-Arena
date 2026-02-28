@@ -12,7 +12,7 @@ interface PendingChallenge {
     challenge_id: number;
     challenger_id: number;
     challenger_username: string;
-    game_type: 'tictactoe' | 'chickenrunner';
+    game_type: 'tictactoe' | 'chickenrunner' | 'stickfighter';
 }
 
 export default function TopBar() {
@@ -44,7 +44,7 @@ export default function TopBar() {
                 challenge_id: lastMessage.challenge_id,
                 challenger_id: lastMessage.challenger_id,
                 challenger_username: lastMessage.challenger_username,
-                game_type: (lastMessage.game_type as 'tictactoe' | 'chickenrunner') || 'tictactoe',
+                game_type: (lastMessage.game_type as 'tictactoe' | 'chickenrunner' | 'stickfighter') || 'tictactoe',
             }]);
         }
     }, [lastMessage]);
@@ -180,7 +180,7 @@ export default function TopBar() {
                         <div key={c.challenge_id} className="topbar-challenge-toast">
                             <div className="toast-text">
                                 <strong>{c.challenger_username}</strong> challenged you to{' '}
-                                {c.game_type === 'chickenrunner' ? '🐔 Chicken Runner' : '❌⭕ Tic Tac Toe'}!
+                                {c.game_type === 'chickenrunner' ? '🐔 Chicken Runner' : c.game_type === 'stickfighter' ? '⚔️ Stick Fighter' : '❌⭕ Tic Tac Toe'}!
                             </div>
                             <div className="toast-actions">
                                 <button className="toast-accept" onClick={() => handleAccept(c)}>Accept</button>
