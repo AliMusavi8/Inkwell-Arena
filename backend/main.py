@@ -172,6 +172,39 @@ async def websocket_endpoint(websocket: WebSocket, token: str):
                     "challenge_id": message.get("challenge_id"),
                 })
 
+            # ── Stick Fighter messages ──
+            elif msg_type == "fighter_ready":
+                opponent_id = message.get("opponent_id")
+                await manager.send_to_user(opponent_id, {
+                    "type": "fighter_ready",
+                    "from_user_id": user_id,
+                    "challenge_id": message.get("challenge_id"),
+                })
+
+            elif msg_type == "fighter_state":
+                opponent_id = message.get("opponent_id")
+                await manager.send_to_user(opponent_id, {
+                    "type": "fighter_state",
+                    "from_user_id": user_id,
+                    "challenge_id": message.get("challenge_id"),
+                    "x": message.get("x"),
+                    "y": message.get("y"),
+                    "facing": message.get("facing"),
+                    "attacking": message.get("attacking"),
+                    "attackFrame": message.get("attackFrame"),
+                    "health": message.get("health"),
+                    "energy": message.get("energy"),
+                })
+
+            elif msg_type == "fighter_hit":
+                opponent_id = message.get("opponent_id")
+                await manager.send_to_user(opponent_id, {
+                    "type": "fighter_hit",
+                    "from_user_id": user_id,
+                    "challenge_id": message.get("challenge_id"),
+                    "damage": message.get("damage"),
+                })
+
     except WebSocketDisconnect:
         pass
     except Exception:

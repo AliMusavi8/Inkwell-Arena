@@ -18,6 +18,7 @@ import {
 } from '../api';
 import TicTacToe from '../components/TicTacToe';
 import ChickenRunner from '../components/ChickenRunner';
+import StickFighter from '../components/StickFighter';
 import './Challenge.css';
 
 export default function Challenge() {
@@ -32,7 +33,7 @@ export default function Challenge() {
         opponentId: number;
         opponentUsername: string;
         isChallenger: boolean;
-        gameType: 'tictactoe' | 'chickenrunner';
+        gameType: 'tictactoe' | 'chickenrunner' | 'stickfighter';
         cpuMode?: boolean;
     } | null>(null);
 
@@ -48,8 +49,8 @@ export default function Challenge() {
     const [freedomMessage, setFreedomMessage] = useState<string | null>(null);
     const [showHistory, setShowHistory] = useState(false);
     const [showPlayers, setShowPlayers] = useState(false);
-    const [selectedGame, setSelectedGame] = useState<'tictactoe' | 'chickenrunner' | null>(null);
-    const [showPlayerListFor, setShowPlayerListFor] = useState<'tictactoe' | 'chickenrunner' | null>(null);
+    const [selectedGame, setSelectedGame] = useState<'tictactoe' | 'chickenrunner' | 'stickfighter' | null>(null);
+    const [showPlayerListFor, setShowPlayerListFor] = useState<'tictactoe' | 'chickenrunner' | 'stickfighter' | null>(null);
 
     useEffect(() => {
         loadData();
@@ -114,7 +115,7 @@ export default function Challenge() {
         }
     };
 
-    const handleChallenge = async (targetUser: UserData, gameType: 'tictactoe' | 'chickenrunner') => {
+    const handleChallenge = async (targetUser: UserData, gameType: 'tictactoe' | 'chickenrunner' | 'stickfighter') => {
         setShowPlayerListFor(null);
         try {
             const challenge = await apiCreateChallenge(targetUser.id);
@@ -204,7 +205,19 @@ export default function Challenge() {
                     cpuMode={activeGame.cpuMode}
                 />
             )}
-            {activeGame && user && activeGame.gameType !== 'chickenrunner' && (
+            {activeGame && user && activeGame.gameType === 'stickfighter' && (
+                <StickFighter
+                    challengeId={activeGame.challengeId}
+                    currentUserId={user.id}
+                    currentUsername={user.display_name || user.username}
+                    opponentId={activeGame.opponentId}
+                    opponentUsername={activeGame.opponentUsername}
+                    isChallenger={activeGame.isChallenger}
+                    onComplete={handleGameComplete}
+                    cpuMode={activeGame.cpuMode}
+                />
+            )}
+            {activeGame && user && activeGame.gameType !== 'chickenrunner' && activeGame.gameType !== 'stickfighter' && (
                 <TicTacToe
                     challengeId={activeGame.challengeId}
                     currentUserId={user.id}
@@ -272,39 +285,23 @@ export default function Challenge() {
 
             {/* ── Game Cards Grid ── */}
             <div className="games-grid">
-                <div className="game-card" onClick={() => setSelectedGame('tictactoe')}>
-                    <span className="game-card-emoji">❌⭕</span>
+                <div className="game-card-wrapper" onClick={() => setSelectedGame('tictactoe')}>
+                    <div className="game-card">
+                        <span className="game-card-emoji">❌⭕</span>
+                    </div>
                     <span className="game-card-title">Tic Tac Toe</span>
-                    <span className="game-card-desc">Classic strategy</span>
                 </div>
-                <div className="game-card" onClick={() => setSelectedGame('chickenrunner')}>
-                    <span className="game-card-emoji">🐔💨</span>
+                <div className="game-card-wrapper" onClick={() => setSelectedGame('chickenrunner')}>
+                    <div className="game-card">
+                        <img src="/cover-images/Chicken Runner.png" alt="Chicken Runner" className="game-card-cover" />
+                    </div>
                     <span className="game-card-title">Chicken Runner</span>
-                    <span className="game-card-desc">Survive longest</span>
                 </div>
-                <div className="game-card game-card-coming">
-                    <span className="game-card-emoji">🎯</span>
-                    <span className="game-card-title">Coming Soon</span>
-                </div>
-                <div className="game-card game-card-coming">
-                    <span className="game-card-emoji">🏎️</span>
-                    <span className="game-card-title">Coming Soon</span>
-                </div>
-                <div className="game-card game-card-coming">
-                    <span className="game-card-emoji">♟️</span>
-                    <span className="game-card-title">Coming Soon</span>
-                </div>
-                <div className="game-card game-card-coming">
-                    <span className="game-card-emoji">🧩</span>
-                    <span className="game-card-title">Coming Soon</span>
-                </div>
-                <div className="game-card game-card-coming">
-                    <span className="game-card-emoji">🎲</span>
-                    <span className="game-card-title">Coming Soon</span>
-                </div>
-                <div className="game-card game-card-coming">
-                    <span className="game-card-emoji">🎮</span>
-                    <span className="game-card-title">Coming Soon</span>
+                <div className="game-card-wrapper" onClick={() => setSelectedGame('stickfighter')}>
+                    <div className="game-card">
+                        <img src="/cover-images/Stickman Fighter.png" alt="Stick Fighter" className="game-card-cover" />
+                    </div>
+                    <span className="game-card-title">Stick Fighter</span>
                 </div>
             </div>
 

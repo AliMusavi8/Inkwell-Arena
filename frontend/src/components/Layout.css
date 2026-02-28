@@ -3,10 +3,10 @@
 }
 
 .layout-content {
-    margin-top: 88px;
+    margin-top: 132px;
     /* top bar (56px) + gap (16px top padding) + 16px breathing */
     padding: 0 var(--space-xl) var(--space-xl);
-    max-width: 1400px;
+    max-width: 2000px;
     margin-left: auto;
     margin-right: auto;
     width: 100%;

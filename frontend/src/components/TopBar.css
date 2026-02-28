@@ -6,14 +6,14 @@
     transform: translateX(-50%);
     width: calc(100% - 64px);
     max-width: 800px;
-    height: 56px;
+    height: 100px;
     z-index: 100;
 
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 20px;
-    gap: 12px;
+    padding: 0 32px;
+    gap: 20px;
 
     background: rgba(8, 12, 20, 0.75);
     backdrop-filter: blur(20px);
@@ -42,21 +42,21 @@
 .topbar-brand {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 14px;
     text-decoration: none;
     color: var(--color-text-primary);
     flex-shrink: 0;
 }
 
 .topbar-logo {
-    width: 32px;
-    height: 32px;
+    width: 52px;
+    height: 52px;
     border-radius: 8px;
 }
 
 .topbar-brand-name {
     font-family: var(--font-display);
-    font-size: 1.1rem;
+    font-size: 1.4rem;
     font-weight: 700;
     letter-spacing: 0.02em;
     background: linear-gradient(135deg, var(--color-gold), var(--color-gold-light));
@@ -69,17 +69,17 @@
 .topbar-links {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 8px;
 }
 
 .topbar-link {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
-    border-radius: 10px;
+    gap: 8px;
+    padding: 12px 22px;
+    border-radius: 14px;
     text-decoration: none;
-    font-size: 0.88rem;
+    font-size: 1.05rem;
     font-weight: 500;
     color: var(--color-text-secondary);
     transition: all 0.2s ease;
@@ -97,21 +97,21 @@
 }
 
 .topbar-link-icon {
-    font-size: 1.05rem;
+    font-size: 1.25rem;
 }
 
 /* ── Right Side ── */
 .topbar-right {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
     position: relative;
     flex-shrink: 0;
 }
 
 .topbar-status-dot {
-    width: 8px;
-    height: 8px;
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
     transition: background 0.3s ease;
 }
@@ -133,13 +133,13 @@
 }
 
 .topbar-avatar {
-    width: 36px;
-    height: 36px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.8rem;
+    font-size: 1rem;
     font-weight: 700;
     color: #fff;
     transition: box-shadow 0.2s ease, transform 0.2s ease;

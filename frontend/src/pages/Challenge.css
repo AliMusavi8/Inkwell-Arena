@@ -5,28 +5,35 @@
     max-width: 100%;
     margin: 0 auto;
     padding: 0 var(--space-lg);
+    overflow-x: hidden;
 }
 
 /* ===== Game Cards Grid ===== */
 .games-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
 }
 
-.game-card {
+.game-card-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.game-card {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    display: flex;
+    align-items: center;
     justify-content: center;
-    gap: 8px;
-    padding: 28px 32px;
+    overflow: hidden;
     background: var(--color-bg-card);
     border: 1px solid rgba(200, 120, 20, 0.25);
     border-radius: var(--radius-lg);
-    cursor: pointer;
     transition: all 0.25s ease;
-    text-align: center;
 }
 
 .game-card:hover {
@@ -35,46 +42,44 @@
     box-shadow: 0 8px 24px rgba(200, 120, 20, 0.12);
 }
 
-.game-card-wide {
-    grid-column: span 2;
+.game-card-emoji {
+    font-size: 3.5rem;
 }
 
-.game-card-emoji {
-    font-size: 2rem;
+.game-card-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .game-card-title {
-    font-size: 0.95rem;
+    font-size: 1rem;
     font-weight: 600;
     color: var(--color-text-primary);
+    text-align: center;
 }
 
 .game-card-desc {
     font-size: 0.78rem;
     color: var(--color-text-muted);
-}
-
-.game-card-coming {
-    opacity: 0.4;
-    cursor: default;
-    pointer-events: none;
+    text-align: center;
 }
 
 /* ===== Bottom Bar ===== */
 .challenge-bottom-bar {
     display: flex;
     justify-content: space-between;
-    gap: 16px;
+    gap: 24px;
     margin-top: 8px;
 }
 
-.challenge-bottom-btn {
+.btn.challenge-bottom-btn {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 14px 24px;
+    padding: 18px 32px;
     background: rgba(200, 120, 20, 0.06);
     border: 1px solid rgba(200, 120, 20, 0.25);
     border-radius: var(--radius-lg);
