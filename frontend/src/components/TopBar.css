@@ -263,10 +263,10 @@
 /* ── Challenge Toast Notifications ── */
 .topbar-challenge-toasts {
     position: fixed;
-    top: 84px;
+    bottom: 32px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 99;
+    z-index: 150;
     display: flex;
     flex-direction: column;
     gap: 8px;
