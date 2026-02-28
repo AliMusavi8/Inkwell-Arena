@@ -43,7 +43,7 @@ export function WebSocketProvider({ children }: { children: ReactNode }) {
             return;
         }
 
-        const token = localStorage.getItem('inkwell_token');
+        const token = localStorage.getItem('inkwell_arena_token');
         if (!token) return;
 
         // Don't reconnect if already connected
@@ -52,7 +52,7 @@ export function WebSocketProvider({ children }: { children: ReactNode }) {
         }
 
         function connect() {
-            const currentToken = localStorage.getItem('inkwell_token');
+            const currentToken = localStorage.getItem('inkwell_arena_token');
             if (!currentToken || statusRef.current !== 'authenticated') return;
 
             // Close existing

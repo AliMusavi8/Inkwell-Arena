@@ -16,7 +16,7 @@ root_env = os.path.join(os.path.dirname(__file__), "..", ".env")
 local_env = os.path.join(os.path.dirname(__file__), ".env")
 load_dotenv(root_env if os.path.exists(root_env) else local_env)
 
-JWT_SECRET = os.getenv("JWT_SECRET", "inkwell-secret-key")
+JWT_SECRET = os.getenv("JWT_SECRET", "inkwell-arena-secret-key")
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "1440"))
 

@@ -9,7 +9,7 @@ root_env = os.path.join(os.path.dirname(__file__), "..", ".env")
 local_env = os.path.join(os.path.dirname(__file__), ".env")
 load_dotenv(root_env if os.path.exists(root_env) else local_env)
 
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/inkwell")
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/inkwell_arena")
 
 # Supabase gives `postgres://` but SQLAlchemy needs `postgresql://`
 if DATABASE_URL.startswith("postgres://"):

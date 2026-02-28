@@ -93,8 +93,8 @@ export default function TopBar() {
             <nav className="topbar">
                 {/* Logo */}
                 <NavLink to="/" className="topbar-brand">
-                    <img src={inkwellLogo} alt="Inkwell" className="topbar-logo" />
-                    <span className="topbar-brand-name">Inkwell</span>
+                    <img src={inkwellLogo} alt="Inkwell Arena" className="topbar-logo" />
+                    <span className="topbar-brand-name">Inkwell Arena</span>
                 </NavLink>
 
                 {/* Nav Links */}

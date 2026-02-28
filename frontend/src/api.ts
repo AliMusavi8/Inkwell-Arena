@@ -1,7 +1,7 @@
 const API_BASE = (import.meta.env.VITE_API_URL || "http://localhost:8000") + "/api";
 
 function getToken(): string | null {
-    return localStorage.getItem("inkwell_token");
+    return localStorage.getItem("inkwell_arena_token");
 }
 
 async function request<T>(

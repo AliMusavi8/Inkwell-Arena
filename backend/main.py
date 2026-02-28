@@ -21,7 +21,7 @@ _db.query(User).update({User.is_online: False})
 _db.commit()
 _db.close()
 
-app = FastAPI(title="Inkwell API", version="1.0.0")
+app = FastAPI(title="Inkwell Arena API", version="1.0.0")
 
 # CORS
 allowed_origins = os.getenv(
@@ -46,7 +46,7 @@ app.include_router(challenges.router)
 
 @app.get("/api/health")
 def health_check():
-    return {"status": "ok", "service": "inkwell"}
+    return {"status": "ok", "service": "inkwell_arena"}
 
 
 @app.websocket("/ws/{token}")

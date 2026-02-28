@@ -203,7 +203,7 @@ export default function SplashScreen({ onComplete }: { onComplete: () => void })
 
             {/* Title text — slightly above midpoint */}
             <div className="splash-title">
-                <h1 className="splash-brand pattern-text" data-text="Inkwell">Inkwell</h1>
+                <h1 className="splash-brand pattern-text" data-text="Inkwell Arena">Inkwell Arena</h1>
                 <p className="splash-tagline pattern-text" data-text="The Depths Await">The Depths Await</p>
             </div>
 

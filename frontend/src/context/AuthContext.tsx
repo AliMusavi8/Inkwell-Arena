@@ -30,7 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     // Check for existing token on mount
     useEffect(() => {
-        const token = localStorage.getItem('inkwell_token');
+        const token = localStorage.getItem('inkwell_arena_token');
         if (token) {
             apiGetMe()
                 .then((userData) => {
@@ -38,7 +38,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     setStatus('authenticated');
                 })
                 .catch(() => {
-                    localStorage.removeItem('inkwell_token');
+                    localStorage.removeItem('inkwell_arena_token');
                     setStatus('unauthenticated');
                 });
         } else {
@@ -63,20 +63,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const login = async (email: string, password: string) => {
         const res = await apiLogin(email, password);
-        localStorage.setItem('inkwell_token', res.access_token);
+        localStorage.setItem('inkwell_arena_token', res.access_token);
         setUser(res.user);
         setStatus('authenticated');
     };
 
     const register = async (username: string, email: string, password: string, displayName?: string) => {
         const res = await apiRegister(username, email, password, displayName);
-        localStorage.setItem('inkwell_token', res.access_token);
+        localStorage.setItem('inkwell_arena_token', res.access_token);
         setUser(res.user);
         setStatus('authenticated');
     };
 
     const logout = () => {
-        localStorage.removeItem('inkwell_token');
+        localStorage.removeItem('inkwell_arena_token');
         setUser(null);
         setConqueredAccounts([]);
         setStatus('unauthenticated');

@@ -1,75 +1,106 @@
-# Inkwell ⚔️
+<div align="center">
+  <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Crossed%20Swords.png" alt="Swords" width="60" />
+  <h1>Inkwell Arena</h1>
+  <p><b>A Twitter-like Social Platform with High-Stakes Minigames</b></p>
 
-A Twitter-like social platform with a unique **Challenge Arena** — play Tic Tac Toe against other users, and the winner gets 10 minutes to post on the loser's account!
+  <p>
+    <a href="#features">Features</a> •
+    <a href="#tech-stack">Tech Stack</a> •
+    <a href="#getting-started">Getting Started</a> •
+    <a href="#games">The Games</a>
+  </p>
+</div>
 
-## Project Structure
+---
 
-```
-├── frontend/       # React + TypeScript + Vite
-│   ├── src/
-│   │   ├── api.ts              # API client layer
-│   │   ├── context/            # Auth + WebSocket providers
-│   │   ├── components/         # Sidebar, Header, AuthModal, TicTacToe
-│   │   └── pages/              # Feed, Challenge, Settings
-│   └── .env.example
-├── backend/        # FastAPI + Python
-│   ├── main.py                 # App entry + WebSocket endpoint
-│   ├── models.py               # SQLAlchemy models
-│   ├── routers/                # API routes
-│   └── .env.example
-├── .gitignore
-└── README.md
-```
+## 📖 Overview
 
-## Features
+Inkwell Arena is a modern social media platform that adds a unique, high-stakes twist to the traditional feed. Users can challenge each other to real-time multiplayer minigames. The twist? **The winner gains 10 minutes of complete posting access to the loser's account.**
 
-- 🐦 **Twitter-style Feed** — 280-char text posts with likes
-- ⚔️ **Challenge Arena** — Challenge other users to Tic Tac Toe
-- 🏆 **Account Conquest** — Winner posts on loser's account for 10 minutes
-- 🔴 **Real-time** — WebSocket-powered online status + game moves
-- 🔐 **JWT Authentication** — Secure login/registration
-- 📊 **Supabase** — Cloud PostgreSQL database
+## ✨ Features
 
-## Setup
+- 🐦 **Real-Time Social Feed:** Post 280-character updates, like, and interact instantly.
+- ⚔️ **Challenge System:** Send and receive live game challenges via WebSockets.
+- 🎮 **Three Built-in Minigames:**
+  - **Tic Tac Toe:** The classic battle of wits.
+  - **Chicken Runner:** An endless runner where you dodge obstacles faster than your opponent.
+  - **Stick Fighter:** A fast-paced 2D combat game with health, energy, punches, kicks, and specials!
+- 🏆 **Conquest Mechanics:** Winner takes over the loser's account for 10 minutes. 
+
+---
+
+## 🛠️ Tech Stack
+
+**Frontend**
+- React 19 (TypeScript)
+- Vite for lightning-fast builds
+- Vanilla CSS with custom design tokens for a premium look
+- React Router v7 for navigation
+- React Icons
+
+**Backend**
+- Python 3.10+
+- FastAPI (High-performance API framework)
+- WebSockets for real-time multiplayer sync
+- SQLAlchemy 2.0 (ORM)
+- JWT Authentication & bcrypt hashing
+
+**Database**
+- PostgreSQL (Hosted on Supabase)
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js 18+
-- Python 3.10+
-- Supabase account (free tier)
+Ensure you have the following installed:
+- [Node.js](https://nodejs.org/) (v18 or newer)
+- [Python](https://www.python.org/) (v3.10 or newer)
+- A [Supabase](https://supabase.com/) account (for the database)
 
-### Backend
+### 1. Database Setup
+1. Create a new project in Supabase.
+2. Obtain your Postgres connection string (`DATABASE_URL`).
 
+### 2. Backend Setup
 ```bash
+# Navigate to the backend directory
 cd backend
-cp .env.example .env        # Edit with your Supabase credentials
-pip install -r requirements.txt
-python main.py              # → http://localhost:8000
-```
 
-### Frontend
+# Copy the environment template
+cp .env.example .env
+```
+Edit the `.env` file and add your `DATABASE_URL` and a secure `JWT_SECRET`.
 
 ```bash
-cd frontend
-cp .env.example .env        # Optional for local dev
-npm install
-npm run dev                 # → http://localhost:5173
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Start the FastAPI server
+python main.py
 ```
+*The backend will be running at `http://localhost:8000`*
 
-## Deployment
+### 3. Frontend Setup
+```bash
+# Open a new terminal and navigate to the frontend directory
+cd frontend
 
-| Service | Platform | Config |
-|---------|----------|--------|
-| Frontend | Vercel | Root: `frontend/`, Framework: Vite |
-| Backend | Render | Root: `backend/`, Start: `uvicorn main:app --host 0.0.0.0 --port $PORT` |
-| Database | Supabase | PostgreSQL (already cloud-hosted) |
+# Copy the environment template (optional for local dev)
+cp .env.example .env
 
-### Environment Variables
+# Install Node dependencies
+npm install
 
-**Vercel (Frontend):**
-- `VITE_API_URL` = your Render backend URL
+# Start the Vite development server
+npm run dev
+```
+*The frontend will be running at `http://localhost:5173`*
 
-**Render (Backend):**
-- `DATABASE_URL` = Supabase connection string
-- `JWT_SECRET` = strong random secret
-- `ALLOWED_ORIGINS` = your Vercel domain
+---
+<div align="center">
+  <i>Built with ❤️ for high-stakes posting. 
+  
+  P.S: Don't expect a lot of features, this is just a proof of concept.</i>
+</div>

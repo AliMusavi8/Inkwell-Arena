@@ -48,9 +48,9 @@ export default function AuthModal({ onGuestMode, onClose }: AuthModalProps) {
                         </button>
                     )}
                     <div className="auth-brand-icon">
-                        <img src={inkwellLogo} alt="Inkwell" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '14px' }} />
+                        <img src={inkwellLogo} alt="Inkwell Arena" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '14px' }} />
                     </div>
-                    <h2>Welcome to Inkwell</h2>
+                    <h2>Welcome to Inkwell Arena</h2>
                     <p>Share your thoughts with the world</p>
                 </div>
 
