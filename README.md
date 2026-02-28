@@ -4,10 +4,9 @@
   <p><b>A Twitter-like Social Platform with High-Stakes Minigames</b></p>
 
   <p>
-    <a href="#features">Features</a> •
-    <a href="#tech-stack">Tech Stack</a> •
-    <a href="#getting-started">Getting Started</a> •
-    <a href="#games">The Games</a>
+    <a href="#-features">Features</a> •
+    <a href="#%EF%B8%8F-tech-stack">Tech Stack</a> •
+    <a href="#-getting-started">Getting Started</a>
   </p>
 </div>
 
