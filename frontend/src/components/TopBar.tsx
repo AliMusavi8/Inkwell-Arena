@@ -168,7 +168,7 @@ export default function TopBar() {
                             )}
                         </>
                     ) : (
-                        <span className="topbar-guest-label">Guest</span>
+                        <div className="topbar-avatar topbar-guest-avatar">Guest</div>
                     )}
                 </div>
             </nav>

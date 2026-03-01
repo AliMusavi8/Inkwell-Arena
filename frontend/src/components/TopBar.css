@@ -161,6 +161,15 @@
     font-style: italic;
 }
 
+.topbar-guest-avatar {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.18);
+    color: var(--color-text-secondary);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
 /* ── Dropdown Menu ── */
 .topbar-menu {
     position: absolute;
