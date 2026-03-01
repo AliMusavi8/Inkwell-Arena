@@ -10,11 +10,8 @@ import {
     apiGetChallengeHistory,
     apiGetActiveChallenge,
     apiForfeitChallenge,
-    apiGetUnderSiege,
-    apiReleaseSiege,
     type UserData,
     type ChallengeData,
-    type ConqueredAccountData,
 } from '../api';
 import TicTacToe from '../components/TicTacToe';
 import ChickenRunner from '../components/ChickenRunner';
@@ -22,7 +19,7 @@ import StickFighter from '../components/StickFighter';
 import './Challenge.css';
 
 export default function Challenge() {
-    const { user, refreshConquests, conqueredAccounts } = useAuth();
+    const { user, refreshConquests } = useAuth();
     const { lastMessage, sendMessage, onlineUserIds } = useWebSocket();
     const location = useLocation();
     const [users, setUsers] = useState<UserData[]>([]);
@@ -46,7 +43,7 @@ export default function Challenge() {
 
     // Existing active challenge from DB (for resume/forfeit)
     const [staleChallenge, setStaleChallenge] = useState<ChallengeData | null>(null);
-    const [underSiege, setUnderSiege] = useState<ConqueredAccountData[]>([]);
+
     const [freedomMessage, setFreedomMessage] = useState<string | null>(null);
     const [showHistory, setShowHistory] = useState(false);
     const [showPlayers, setShowPlayers] = useState(false);
@@ -97,14 +94,12 @@ export default function Challenge() {
 
     const loadData = async () => {
         try {
-            const [u, h, siege] = await Promise.all([
+            const [u, h] = await Promise.all([
                 apiGetAllUsers(),
                 apiGetChallengeHistory(),
-                apiGetUnderSiege(),
             ]);
             setUsers(u);
             setHistory(h);
-            setUnderSiege(siege);
         } catch { }
         setLoading(false);
     };
@@ -172,21 +167,7 @@ export default function Challenge() {
         await loadData();
     };
 
-    const handleRelease = async (acc: ConqueredAccountData) => {
-        try {
-            await apiReleaseSiege(acc.challenge_id);
-            // Notify the loser via WebSocket
-            sendMessage({
-                type: 'siege_released',
-                loser_id: acc.user_id,
-                winner_username: user?.username,
-            });
-            await refreshConquests();
-            await loadData();
-        } catch (err: any) {
-            alert(err.message || 'Failed to release siege');
-        }
-    };
+
 
     if (loading) {
         return <div className="challenge-page animate-fade-in"><p>Loading...</p></div>;
@@ -493,86 +474,4 @@ export default function Challenge() {
     );
 }
 
-function CountdownTimer({ expiresAt }: { expiresAt: string }) {
-    const [timeLeft, setTimeLeft] = useState('');
 
-    useEffect(() => {
-        const update = () => {
-            const now = new Date();
-            // Ensure UTC parsing — append Z if not already there
-            const raw = expiresAt.endsWith('Z') || expiresAt.includes('+') ? expiresAt : expiresAt + 'Z';
-            const expires = new Date(raw);
-            const diff = Math.max(0, Math.floor((expires.getTime() - now.getTime()) / 1000));
-            const min = Math.floor(diff / 60);
-            const sec = diff % 60;
-            setTimeLeft(`${min}:${sec.toString().padStart(2, '0')}`);
-        };
-        update();
-        const interval = setInterval(update, 1000);
-        return () => clearInterval(interval);
-    }, [expiresAt]);
-
-    return <span className="countdown">{timeLeft}</span>;
-}
-
-function CircularCountdown({ expiresAt, totalMinutes = 10, color = '#4F6AF6' }: {
-    expiresAt: string;
-    totalMinutes?: number;
-    color?: string;
-}) {
-    const [progress, setProgress] = useState(1);
-    const [timeLeft, setTimeLeft] = useState('');
-
-    useEffect(() => {
-        const totalSeconds = totalMinutes * 60;
-        const update = () => {
-            const now = new Date();
-            const raw = expiresAt.endsWith('Z') || expiresAt.includes('+') ? expiresAt : expiresAt + 'Z';
-            const expires = new Date(raw);
-            const diff = Math.max(0, Math.floor((expires.getTime() - now.getTime()) / 1000));
-            setProgress(diff / totalSeconds);
-            const min = Math.floor(diff / 60);
-            const sec = diff % 60;
-            setTimeLeft(`${min}:${sec.toString().padStart(2, '0')}`);
-        };
-        update();
-        const interval = setInterval(update, 1000);
-        return () => clearInterval(interval);
-    }, [expiresAt, totalMinutes]);
-
-    const size = 48;
-    const stroke = 3.5;
-    const radius = (size - stroke) / 2;
-    const circumference = 2 * Math.PI * radius;
-    const dashOffset = circumference * (1 - progress);
-
-    return (
-        <div className="circular-countdown" style={{ width: size, height: size }}>
-            <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-                <circle
-                    cx={size / 2}
-                    cy={size / 2}
-                    r={radius}
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={stroke}
-                    opacity={0.12}
-                />
-                <circle
-                    cx={size / 2}
-                    cy={size / 2}
-                    r={radius}
-                    fill="none"
-                    stroke={color}
-                    strokeWidth={stroke}
-                    strokeLinecap="round"
-                    strokeDasharray={circumference}
-                    strokeDashoffset={dashOffset}
-                    transform={`rotate(-90 ${size / 2} ${size / 2})`}
-                    style={{ transition: 'stroke-dashoffset 1s linear' }}
-                />
-            </svg>
-            <span className="circular-countdown-text">{timeLeft}</span>
-        </div>
-    );
-}
