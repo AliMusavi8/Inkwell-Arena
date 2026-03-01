@@ -60,9 +60,7 @@ function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Feed isGuest={isGuest} />} />
-          <Route path="/challenge" element={
-            isGuest ? <Navigate to="/" replace /> : <ProtectedRoute><Challenge /></ProtectedRoute>
-          } />
+          <Route path="/challenge" element={<Challenge isGuest={isGuest} />} />
           <Route path="/settings" element={
             isGuest ? <Navigate to="/" replace /> : <ProtectedRoute><Settings /></ProtectedRoute>
           } />

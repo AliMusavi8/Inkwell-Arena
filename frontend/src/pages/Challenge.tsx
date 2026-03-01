@@ -18,7 +18,7 @@ import ChickenRunner from '../components/ChickenRunner';
 import StickFighter from '../components/StickFighter';
 import './Challenge.css';
 
-export default function Challenge() {
+export default function Challenge({ isGuest = false }: { isGuest?: boolean }) {
     const { user, refreshConquests } = useAuth();
     const { lastMessage, sendMessage, onlineUserIds } = useWebSocket();
     const location = useLocation();
@@ -51,9 +51,13 @@ export default function Challenge() {
     const [showPlayerListFor, setShowPlayerListFor] = useState<'tictactoe' | 'chickenrunner' | 'stickfighter' | null>(null);
 
     useEffect(() => {
+        if (isGuest) {
+            setLoading(false);
+            return;
+        }
         loadData();
         checkActiveChallenge();
-    }, []);
+    }, [isGuest]);
 
     // Check if navigated here after accepting a challenge (defender side)
     useEffect(() => {
@@ -105,13 +109,20 @@ export default function Challenge() {
     };
 
     const checkActiveChallenge = async () => {
-        const active = await apiGetActiveChallenge();
-        if (active) {
-            setStaleChallenge(active);
+        try {
+            const active = await apiGetActiveChallenge();
+            if (active) {
+                setStaleChallenge(active);
+            }
+        } catch {
+            setStaleChallenge(null);
         }
     };
 
     const handleChallenge = async (targetUser: UserData, gameType: 'tictactoe' | 'chickenrunner' | 'stickfighter') => {
+        if (isGuest) {
+            return;
+        }
         setShowPlayerListFor(null);
         try {
             const challenge = await apiCreateChallenge(targetUser.id);
@@ -173,14 +184,17 @@ export default function Challenge() {
         return <div className="challenge-page animate-fade-in"><p>Loading...</p></div>;
     }
 
+    const currentUserId = user?.id ?? 0;
+    const currentUsername = user?.display_name || user?.username || 'Guest';
+
     return (
         <div className="challenge-page animate-fade-in">
             {/* Game Modal */}
-            {activeGame && user && activeGame.gameType === 'chickenrunner' && (
+            {activeGame && activeGame.gameType === 'chickenrunner' && (
                 <ChickenRunner
                     challengeId={activeGame.challengeId}
-                    currentUserId={user.id}
-                    currentUsername={user.display_name || user.username}
+                    currentUserId={currentUserId}
+                    currentUsername={currentUsername}
                     opponentId={activeGame.opponentId}
                     opponentUsername={activeGame.opponentUsername}
                     isChallenger={activeGame.isChallenger}
@@ -188,11 +202,11 @@ export default function Challenge() {
                     cpuMode={activeGame.cpuMode}
                 />
             )}
-            {activeGame && user && activeGame.gameType === 'stickfighter' && (
+            {activeGame && activeGame.gameType === 'stickfighter' && (
                 <StickFighter
                     challengeId={activeGame.challengeId}
-                    currentUserId={user.id}
-                    currentUsername={user.display_name || user.username}
+                    currentUserId={currentUserId}
+                    currentUsername={currentUsername}
                     opponentId={activeGame.opponentId}
                     opponentUsername={activeGame.opponentUsername}
                     isChallenger={activeGame.isChallenger}
@@ -200,11 +214,11 @@ export default function Challenge() {
                     cpuMode={activeGame.cpuMode}
                 />
             )}
-            {activeGame && user && activeGame.gameType !== 'chickenrunner' && activeGame.gameType !== 'stickfighter' && (
+            {activeGame && activeGame.gameType !== 'chickenrunner' && activeGame.gameType !== 'stickfighter' && (
                 <TicTacToe
                     challengeId={activeGame.challengeId}
-                    currentUserId={user.id}
-                    currentUsername={user.display_name || user.username}
+                    currentUserId={currentUserId}
+                    currentUsername={currentUsername}
                     opponentId={activeGame.opponentId}
                     opponentUsername={activeGame.opponentUsername}
                     isChallenger={activeGame.isChallenger}
@@ -293,7 +307,12 @@ export default function Challenge() {
 
             {/* ── Bottom Buttons ── */}
             <div className="challenge-bottom-bar">
-                <button className="btn challenge-bottom-btn" onClick={() => setShowPlayers(true)}>
+                <button
+                    className="btn challenge-bottom-btn"
+                    onClick={() => setShowPlayers(true)}
+                    disabled={isGuest}
+                    title={isGuest ? 'Guest mode can only play practice.' : undefined}
+                >
                     <GiSwordClash /> Players
                 </button>
                 <button className="btn challenge-bottom-btn" onClick={() => setShowHistory(true)}>
@@ -310,14 +329,16 @@ export default function Challenge() {
                         <div className="game-action-options">
                             <button
                                 className="game-action-btn challenge"
+                                disabled={isGuest}
                                 onClick={() => {
+                                    if (isGuest) return;
                                     const game = selectedGame;
                                     setSelectedGame(null);
                                     setShowPlayerListFor(game);
                                 }}
                             >
                                 <GiSwordClash className="game-action-icon" />
-                                <span>Challenge a Player</span>
+                                <span>{isGuest ? 'Guest: Practice Only' : 'Challenge a Player'}</span>
                             </button>
                             <button
                                 className="game-action-btn practice"
@@ -377,7 +398,7 @@ export default function Challenge() {
                                             <button
                                                 className="btn btn-primary challenge-btn"
                                                 onClick={() => handleChallenge(u, showPlayerListFor)}
-                                                disabled={!isOnline || !!waitingFor}
+                                                disabled={isGuest || !isOnline || !!waitingFor}
                                             >
                                                 <GiSwordClash /> Challenge
                                             </button>
@@ -473,5 +494,4 @@ export default function Challenge() {
         </div>
     );
 }
-
 
