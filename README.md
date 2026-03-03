@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="frontend/src/assets/inkwell-logo.png" alt="Swords" width="60" />
+  <img src="frontend/src/assets/inkwell-logo.png" alt="Swords" width="120" />
   <h1>Inkwell Arena</h1>
   <p><b>A Twitter-like Social Platform with High-Stakes Minigames</b></p>
 
