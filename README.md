@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Crossed%20Swords.png" alt="Swords" width="60" />
+  <img src="frontend/src/assets/inkwell-logo.png" alt="Swords" width="60" />
   <h1>Inkwell Arena</h1>
   <p><b>A Twitter-like Social Platform with High-Stakes Minigames</b></p>
 
